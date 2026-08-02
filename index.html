@@ -1,0 +1,410 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>專業風水羅盤Pro Max</title>
+<style>
+:root{--bg:#0e1116;--card:#171b22;--card2:#1f242f;--gold:#d4b16a;--gold2:#f0d78c;--red:#e74c3c;--text:#e8e8e8;--muted:#8a94a6}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC",sans-serif}
+body{background:radial-gradient(1200px 600px at 50% -20%,#1c2333 0%,var(--bg) 60%);color:var(--text);display:flex;justify-content:center;min-height:100vh}
+.container{width:100%;max-width:520px;padding:14px 14px 80px}
+.header{text-align:center;padding:14px 0 6px}
+.header h1{font-size:1.55rem;letter-spacing:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900}
+.header p{font-size:.78rem;color:var(--muted);margin-top:4px}
+.card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid #252c39;border-radius:18px;padding:16px;margin-top:14px;box-shadow:0 8px 30px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.05)}
+.card-title{font-weight:800;font-size:1.05rem;text-align:center;padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid #2a3344;color:var(--gold2);letter-spacing:1px}
+.compass-wrap{position:relative;width:300px;height:300px;margin:0 auto}
+.ring{position:absolute;left:50%;top:50%;border-radius:50%;transform:translate(-50%,-50%)}
+#ring24{width:300px;height:300px;border:2px solid #2b3446;background:conic-gradient(from 0deg,#1a1f2b,#202737,#1a1f2b);box-shadow:inset 0 0 25px rgba(0,0,0,.6)}
+#ring8{width:220px;height:220px;border:1px dashed #3a445c;background:radial-gradient(circle,#1e242f 60%,#181d27)}
+#ringInner{width:140px;height:140px;background:radial-gradient(circle,#fff 0%,#d8dde6 100%);border:6px solid #11151d;box-shadow:0 0 15px rgba(0,0,0,.8)}
+.tick{position:absolute;left:50%;top:0;width:1px;height:100%;transform-origin:center;pointer-events:none}
+.tick span{position:absolute;font-size:9px;color:var(--muted);transform:translateX(-50%)}
+.tick24 span{top:8px;font-size:10px;font-weight:700;color:#cbd5e1}
+.tick24 b{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:7px;color:#6b7a90}
+.needle{position:absolute;left:50%;top:50%;width:4px;height:88%;background:linear-gradient(to bottom,var(--red) 0%,var(--red) 50%,#bdc3c7 50%,#ecf0f1 100%);transform:translate(-50%,-50%);border-radius:3px;z-index:20;pointer-events:none}
+.needle::after{content:'';position:absolute;left:50%;top:50%;width:18px;height:18px;background:radial-gradient(circle,var(--gold2),var(--gold));border-radius:50%;transform:translate(-50%,-50%);border:2px solid #fff;box-shadow:0 0 8px rgba(212,177,106,.8)}
+.center-dot{position:absolute;left:50%;top:50%;width:300px;height:300px;transform:translate(-50%,-50%);transition:transform .15s cubic-bezier(.2,.8,.2,1)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.info-item{background:#12151c;border:1px solid #252e3e;border-radius:12px;padding:10px;text-align:center}
+.info-item .lab{font-size:.7rem;color:var(--muted)} 
+.info-item .val{font-size:1rem;font-weight:800;margin-top:2px;color:var(--gold2)}
+.info-full{grid-column:span 2}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.7rem;font-weight:700;margin-left:4px}
+.badge吉{background:rgba(39,174,96,.15);color:#2ecc71;border:1px solid rgba(39,174,96,.3)}
+.badge凶{background:rgba(231,76,60,.15);color:#e74c3c;border:1px solid rgba(231,76,60,.3)}
+.badge平{background:rgba(149,165,166,.15);color:#bdc3c7;border:1px solid rgba(149,165,166,.3)}
+.btn{width:100%;padding:13px;border:none;border-radius:12px;font-weight:800;font-size:.95rem;cursor:pointer;transition:.15s}
+.btn:active{transform:scale(.97)}
+.btn-gold{background:linear-gradient(90deg,var(--gold),var(--gold2));color:#111;box-shadow:0 6px 18px rgba(212,177,106,.3)}
+.btn-dark{background:#232a39;color:var(--text);border:1px solid #2e384e}
+.row{display:flex;gap:8px;margin-top:8px}
+.row button{flex:1;padding:9px;border-radius:10px;border:1px solid #2b3446;background:#1a202e;color:#aab6c8;font-weight:700;font-size:.8rem}
+.result-box{margin-top:12px;background:#12151c;border:1px solid #2a3444;border-radius:14px;padding:14px;display:none}
+.result-title{font-size:1.25rem;font-weight:900;text-align:center;color:var(--gold2);padding-bottom:8px;border-bottom:1px dashed #2e3a50;margin-bottom:10px}
+.result-sec{margin-bottom:12px;line-height:1.6;font-size:.88rem}
+.result-sec strong{display:block;color:var(--gold);margin-bottom:3px;font-size:.85rem}
+.kv{display:grid;grid-template-columns:90px 1fr;gap:6px;font-size:.85rem;margin-top:6px}
+.kv div:nth-child(odd){color:var(--muted)} 
+.kv div:nth-child(even){font-weight:600}
+.selects{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.selects select{width:100%;padding:10px;border-radius:10px;background:#12151c;border:1px solid #2a3444;color:#e8e8e8;font-size:.85rem}
+.feng-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.feng-card{background:#12151c;border:1px solid #242f42;border-radius:12px;padding:10px}
+.feng-card h4{font-size:.85rem;color:var(--gold2);margin-bottom:4px}
+.feng-card p{font-size:.78rem;line-height:1.5;color:#cbd5e1}
+.tag{display:inline-block;background:#1e2736;border:1px solid #2d3a50;border-radius:6px;padding:1px 6px;font-size:.7rem;margin-right:4px;color:#8aa0c0}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>專業風水羅盤 Pro Max</h1>
+<p>24山 · 八宅 · 九宮飛星2026 · 64卦 · 財位桃花文昌驛馬</p>
+</div>
+
+<div class="card">
+<div class="card-title">三合三元羅盤 · 即時感測</div>
+<div class="compass-wrap">
+<div id="centerDot" class="center-dot">
+<div id="ring24" class="ring"></div>
+<div id="ring8" class="ring"></div>
+<div id="ringInner" class="ring"></div>
+<div id="ticks24"></div>
+</div>
+<div class="needle"></div>
+</div>
+
+<div class="info-grid">
+<div class="info-item"><div class="lab">度數</div><div class="val" id="degText">0°</div></div>
+<div class="info-item"><div class="lab">24山坐向</div><div class="val" id="mountText">子山午向</div></div>
+<div class="info-item"><div class="lab">八卦 / 五行</div><div class="val" id="guaText">坎卦 · 水</div></div>
+<div class="info-item"><div class="lab">八宅 / 東西宅</div><div class="val" id="houseText">坎宅 · 東四宅</div></div>
+<div class="info-item info-full"><div class="lab">當前方位吉凶</div><div class="val" id="luckText">吉 <span class="badge 吉">生氣位</span></div></div>
+</div>
+
+<div id="sensorLog" style="display:none;background:#0a0e14;border:1px solid #1e2a3a;border-radius:10px;padding:8px;margin-top:10px;font-size:11px;color:#7a8aa3;white-space:pre-wrap;max-height:120px;overflow:auto;text-align:left"></div>
+<button class="btn btn-gold" id="sensorBtn" onclick="initSensors()">🔓 點擊啟用陀螺儀 / 羅盤校正</button>
+<div class="row">
+<button onclick="manualRotate(0)">坎北 0°</button>
+<button onclick="manualRotate(90)">震東 90°</button>
+<button onclick="manualRotate(180)">離南 180°</button>
+<button onclick="manualRotate(270)">兌西 270°</button>
+</div>
+<input type="range" id="slider" min="0" max="360" value="0" style="width:100%;margin-top:10px" oninput="manualRotate(this.value)">
+</div>
+
+<div class="card">
+<div class="card-title">個人化風水佈局</div>
+<div class="selects">
+<select id="zodiacSel" onchange="updateFengShui()"><option value="">請選生肖 (桃花/驛馬)</option><option>鼠</option><option>牛</option><option>虎</option><option>兔</option><option>龍</option><option>蛇</option><option>馬</option><option>羊</option><option>猴</option><option>雞</option><option>狗</option><option>豬</option></select>
+<select id="doorSel" onchange="updateFengShui()"><option value="">大門/床頭朝向</option><option value="0">朝北</option><option value="90">朝東</option><option value="180">朝南</option><option value="270">朝西</option></select>
+</div>
+
+<div class="feng-grid">
+<div class="feng-card"><h4>💰 財位解析</h4><p id="caifu">2026丙午年八白財星在正南方，明財位在進門斜對角。</p></div>
+<div class="feng-card"><h4>🌸 桃花人緣</h4><p id="taohua">選擇生肖後自動顯示本命桃花位。</p></div>
+<div class="feng-card"><h4>📚 文昌事業</h4><p id="wenchang">文昌位在東南方，四綠文昌星2026在中宮。</p></div>
+<div class="feng-card"><h4>⚠️ 煞位與化煞</h4><p id="shaz">2026五黃煞在西北，二黑病符在正東。</p></div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-title">易經64卦 · 白話全解</div>
+<div class="selects">
+<select id="qType"><option value="綜合">綜合運勢</option><option value="財運">正財偏財</option><option value="桃花">桃花姻緣</option><option value="事業">事業升遷</option><option value="置產">買房置產</option><option value="健康">健康平安</option></select>
+<button class="btn btn-dark" style="padding:10px" onclick="randomQuestion()">換個問法</button>
+</div>
+<button class="btn btn-gold" style="margin-top:12px" onclick="drawHexagram()">🔮 搖卦抽籤 · 專業解卦</button>
+<div class="result-box" id="resultBox">
+<div class="result-title" id="hexName"></div>
+<div class="result-sec"><strong>🌟 卦象白話總結</strong><span id="hexSummary"></span></div>
+<div class="result-sec"><strong>💰 財運 / 財位佈局</strong><span id="hexFinance"></span></div>
+<div class="result-sec"><strong>🌸 桃花 / 感情人際</strong><span id="hexLove"></span></div>
+<div class="result-sec"><strong>💼 事業 / 置產</strong><span id="hexCareer"></span></div>
+<div class="result-sec"><strong>🧘 健康提醒</strong><span id="hexHealth"></span></div>
+<div class="result-sec"><strong>💡 開運指引</strong><span id="hexAdvice"></span></div>
+<div class="kv">
+<div>開運色</div><div id="hexColor"></div>
+<div>幸運數</div><div id="hexNum"></div>
+<div>貴人方</div><div id="hexNoble"></div>
+<div>開運物</div><div id="hexItem"></div>
+<div>佈局</div><div id="hexFurn"></div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+const mountains = [
+{n:'子',deg:0,ele:'水',gua:'坎'},{n:'癸',deg:15,ele:'水',gua:'坎'},{n:'丑',deg:30,ele:'土',gua:'艮'},{n:'艮',deg:45,ele:'土',gua:'艮'},{n:'寅',deg:60,ele:'木',gua:'艮'},{n:'甲',deg:75,ele:'木',gua:'震'},{n:'卯',deg:90,ele:'木',gua:'震'},{n:'乙',deg:105,ele:'木',gua:'震'},{n:'辰',deg:120,ele:'土',gua:'巽'},{n:'巽',deg:135,ele:'木',gua:'巽'},{n:'巳',deg:150,ele:'火',gua:'巽'},{n:'丙',deg:165,ele:'火',gua:'離'},{n:'午',deg:180,ele:'火',gua:'離'},{n:'丁',deg:195,ele:'火',gua:'離'},{n:'未',deg:210,ele:'土',gua:'坤'},{n:'坤',deg:225,ele:'土',gua:'坤'},{n:'申',deg:240,ele:'金',gua:'坤'},{n:'庚',deg:255,ele:'金',gua:'兌'},{n:'酉',deg:270,ele:'金',gua:'兌'},{n:'辛',deg:285,ele:'金',gua:'兌'},{n:'戌',deg:300,ele:'土',gua:'乾'},{n:'乾',deg:315,ele:'金',gua:'乾'},{n:'亥',deg:330,ele:'水',gua:'乾'},{n:'壬',deg:345,ele:'水',gua:'坎'},
+];
+const gua8 = [
+{n:'坎',deg:0,ele:'水',dir:'北'},{n:'艮',deg:45,ele:'土',dir:'東北'},{n:'震',deg:90,ele:'木',dir:'東'},{n:'巽',deg:135,ele:'木',dir:'東南'},{n:'離',deg:180,ele:'火',dir:'南'},{n:'坤',deg:225,ele:'土',dir:'西南'},{n:'兌',deg:270,ele:'金',dir:'西'},{n:'乾',deg:315,ele:'金',dir:'西北'},
+];
+function buildRings(){
+ const c=document.getElementById('ticks24');
+ let html='';
+ mountains.forEach(m=>{
+   html+=`<div class="tick tick24" style="transform:translate(-50%,-50%) rotate(${m.deg}deg)"><span>${m.n}</span><b>${m.ele}</b></div>`;
+ });
+ gua8.forEach(g=>{
+   html+=`<div class="tick" style="transform:translate(-50%,-50%) rotate(${g.deg}deg);width:220px"><span style="top:-12px;font-size:11px;color:#d4b16a;font-weight:800">${g.n}</span></div>`;
+ });
+ c.innerHTML=html;
+}
+buildRings();
+const degText=document.getElementById('degText');
+const mountText=document.getElementById('mountText');
+const guaText=document.getElementById('guaText');
+const houseText=document.getElementById('houseText');
+const luckText=document.getElementById('luckText');
+const centerDot=document.getElementById('centerDot');
+function getMount(deg){
+ deg=(deg%360+360)%360;
+ let idx=Math.round(deg/15)%24;
+ return mountains[idx];
+}
+function getGua8(deg){
+ deg=(deg%360+360)%360;
+ let idx=Math.round(deg/45)%8;
+ return gua8[idx];
+}
+function updateCompass(deg){
+ deg=(deg%360+360)%360;
+ centerDot.style.transform=`translate(-50%,-50%) rotate(${-deg}deg)`;
+ degText.innerText=Math.round(deg)+'°';
+ let m=getMount(deg);
+ let g=getGua8(deg);
+ mountText.innerText=`${m.n}山${mountains[(mountains.indexOf(m)+12)%24].n}向`;
+ guaText.innerText=`${g.n}卦 · ${g.ele} · ${g.dir}`;
+ let east4=['坎','震','巽','離'];
+ let isEast=east4.includes(g.n);
+ houseText.innerText=`${g.n}宅 · ${isEast?'東四宅':'西四宅'}`;
+ let luck = deg>=45&&deg<=135?'生氣位 大吉':deg>=135&&deg<=225?'延年位 吉':deg>=225&&deg<=315?'天醫位 吉':'伏位 平';
+ luckText.innerHTML=`${luck} <span class="badge ${luck.includes('吉')?'吉':'平'}">${m.ele}旺</span>`;
+ document.getElementById('slider').value=Math.round(deg);
+ updateFengShui(deg);
+}
+function manualRotate(d){updateCompass(Number(d));}
+
+let sensorActive=false;
+let lastAlpha=null;
+function logSensor(msg){
+ const el=document.getElementById('sensorLog');
+ if(el){ el.style.display='block'; el.innerText = msg + "\n" + el.innerText.substring(0,300); }
+}
+function initSensors(){
+ const btn=document.getElementById('sensorBtn');
+ btn.innerText='🔄 正在啟動感測器...';
+ logSensor('點擊啟動，嘗試3種模式...');
+
+ // 模式1: Generic Sensor API (最準，需HTTPS)
+ if('AbsoluteOrientationSensor' in window){
+   try{
+     let sensor = new AbsoluteOrientationSensor({frequency:20, referenceFrame:'device'});
+     sensor.addEventListener('reading', ()=>{
+       let q = sensor.quaternion;
+       if(!q) return;
+       // 四元數轉方位角
+       let yaw = Math.atan2(2*(q[0]*q[1] + q[2]*q[3]), 1 - 2*(q[1]*q[1] + q[2]*q[2]));
+       let deg = (yaw * 180 / Math.PI);
+       deg = (360 - deg) % 360;
+       if(!isNaN(deg)){
+         sensorActive=true;
+         lastAlpha=deg;
+         updateCompass(deg);
+         btn.innerText='✅ 高精度陀螺儀已啟動 ('+Math.round(deg)+'°)';
+         logSensor('Generic Sensor: '+Math.round(deg)+'°');
+       }
+     });
+     sensor.addEventListener('error', e=>{ logSensor('Generic Sensor錯誤: '+e.error.name); });
+     sensor.start();
+     logSensor('已啟動 AbsoluteOrientationSensor');
+   }catch(e){ logSensor('Generic Sensor啟動失敗: '+e.message); }
+ }
+
+ // 模式2: 傳統 DeviceOrientation
+ const tryOrientation = ()=>{
+   if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
+     DeviceOrientationEvent.requestPermission().then(r=>{
+       logSensor('iOS權限結果: '+r);
+       if(r==='granted'){
+         window.addEventListener('deviceorientation', handleOrientation, true);
+         window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+         btn.innerText='✅ 已授權，請平放畫8字校正';
+       }else{
+         btn.innerText='❌ 權限被拒，改用手動滑桿';
+       }
+     }).catch(err=>{ logSensor('權限請求失敗: '+err); });
+   }else{
+     window.addEventListener('deviceorientation', handleOrientation, true);
+     window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+     logSensor('已監聽 deviceorientation / absolute');
+     setTimeout(()=>{
+       if(!sensorActive){
+         btn.innerText='⚠️ 未收到感測資料，請改用HTTPS或手動滑桿';
+         logSensor('警告: 5秒內無數據 → 你現在是 file:// 開啟，Chrome會封鎖指針，必須上傳到 https://tiiny.host 才會動');
+       }
+     },5000);
+   }
+ };
+ tryOrientation();
+
+ // 模式3: 檢查是否有磁力計
+ if('Magnetometer' in window){
+   logSensor('偵測到 Magnetometer 硬體');
+ }
+}
+
+function handleOrientation(e){
+ let raw = e.webkitCompassHeading!==undefined?e.webkitCompassHeading:e.alpha;
+ let abs = e.absolute;
+ let webkit = e.webkitCompassHeading;
+ logSensor(`收到 orientation: alpha=${e.alpha?Math.round(e.alpha):'null'} webkit=${webkit?Math.round(webkit):'null'} absolute=${abs} beta=${e.beta?Math.round(e.beta):'null'}`);
+ if(raw!=null){
+   let deg = webkit!==undefined? webkit : 360 - raw;
+   deg = (deg%360+360)%360;
+   sensorActive=true;
+   lastAlpha=deg;
+   updateCompass(deg);
+   document.getElementById('sensorBtn').innerText='✅ 羅盤連線中 '+Math.round(deg)+'°';
+ }
+}
+
+const hexagrams = [
+{symbol:"䷀",name:"乾為天 (乾卦) — 天行健，君子以自強不息",jixiong:"大吉",summary:"天行健，君子以自強不息。此卦上上之卦。",finance:"乾為天得乾氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：天行健，君子以自強不息。",health:"留意作息",advice:"開運：穿金色系，貴人在西北方，吉時7-9時。",color:"金色系",number:"8、16",noble:"西北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷁",name:"坤為地 (坤卦) — 地勢坤，君子以厚德載物",jixiong:"大吉",summary:"地勢坤，君子以厚德載物。此卦上上之卦。",finance:"坤為地得坤氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：地勢坤，君子以厚德載物。",health:"留意作息",advice:"開運：穿黃色系，貴人在西南方，吉時8-10時。",color:"黃色系",number:"11、19",noble:"西南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷂",name:"水雷屯 (屯卦) — 萬事起頭難，宜守不宜進",jixiong:"小凶",summary:"萬事起頭難，宜守不宜進。此卦需謹慎。",finance:"起步花費多，財來財去，建議先求穩定現金流。",love:"磨合期，給彼此空間，勿逼婚。",career:"事業：萬事起頭難，宜守不宜進。",health:"留意作息",advice:"開運：穿黑色系，貴人在正北方，吉時9-11時。",color:"黑色系",number:"14、22",noble:"正北",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷃",name:"山水蒙 (蒙卦) — 啟蒙教育，須求明師",jixiong:"平",summary:"啟蒙教育，須求明師。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：啟蒙教育，須求明師。",health:"留意作息",advice:"開運：穿綠色系，貴人在正東方，吉時10-12時。",color:"綠色系",number:"17、25",noble:"正東",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷄",name:"水天需 (需卦) — 等待時機，守正待機",jixiong:"平",summary:"等待時機，守正待機。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：等待時機，守正待機。",health:"留意作息",advice:"開運：穿紅色系，貴人在東南方，吉時11-13時。",color:"紅色系",number:"20、28",noble:"東南",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷅",name:"天水訟 (訟卦) — 爭訟口舌，退讓為吉",jixiong:"凶",summary:"爭訟口舌，退讓為吉。此卦需謹慎。",finance:"財運受阻，易破財、被拖欠，宜守財、修補漏洞，勿投資。",love:"口舌、冷戰多，桃花帶煞，易有第三者或舊情復燃干擾，宜在桃花位放仙人掌化煞或暫時冷靜。",career:"事業：爭訟口舌，退讓為吉。",health:"留意作息",advice:"開運：穿紫色系，貴人在正南方，吉時12-14時。",color:"紫色系",number:"23、31",noble:"正南",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷆",name:"地水師 (師卦) — 統率眾人，正義之師",jixiong:"吉",summary:"統率眾人，正義之師。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：統率眾人，正義之師。",health:"留意作息",advice:"開運：穿粉色系，貴人在西南方，吉時13-15時。",color:"粉色系",number:"26、34",noble:"西南",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷇",name:"水地比 (比卦) — 親比互助，貴人相扶",jixiong:"大吉",summary:"親比互助，貴人相扶。此卦上上之卦。",finance:"水地比得比氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：親比互助，貴人相扶。",health:"留意作息",advice:"開運：穿白色系，貴人在正西方，吉時14-16時。",color:"白色系",number:"29、37",noble:"正西",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷈",name:"風天小畜 (小畜卦) — 小有積蓄，蓄勢待發",jixiong:"小吉",summary:"小有積蓄，蓄勢待發。此卦需謹慎。",finance:"小財可得，積少成多，偏財不宜重壓，適合儲蓄與本業加薪。",love:"小有甜蜜，需主動製造儀式感。",career:"事業：小有積蓄，蓄勢待發。",health:"留意作息",advice:"開運：穿金色系，貴人在西北方，吉時15-17時。",color:"金色系",number:"32、40",noble:"西北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷉",name:"天澤履 (履卦) — 如履虎尾，謹慎為上",jixiong:"平",summary:"如履虎尾，謹慎為上。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：如履虎尾，謹慎為上。",health:"留意作息",advice:"開運：穿黃色系，貴人在西南方，吉時16-18時。",color:"黃色系",number:"35、43",noble:"西南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷊",name:"地天泰 (泰卦) — 天地交泰，否極泰來",jixiong:"大吉",summary:"天地交泰，否極泰來。此卦上上之卦。",finance:"地天泰得泰氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：天地交泰，否極泰來。",health:"留意作息",advice:"開運：穿黑色系，貴人在正北方，吉時17-19時。",color:"黑色系",number:"38、46",noble:"正北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷋",name:"天地否 (否卦) — 閉塞不通，韜光養晦",jixiong:"凶",summary:"閉塞不通，韜光養晦。此卦需謹慎。",finance:"財運受阻，易破財、被拖欠，宜守財、修補漏洞，勿投資。",love:"口舌、冷戰多，桃花帶煞，易有第三者或舊情復燃干擾，宜在桃花位放仙人掌化煞或暫時冷靜。",career:"事業：閉塞不通，韜光養晦。",health:"留意作息",advice:"開運：穿綠色系，貴人在正東方，吉時18-20時。",color:"綠色系",number:"41、49",noble:"正東",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷌",name:"天火同人 (同人卦) — 同心同德，合作有成",jixiong:"吉",summary:"同心同德，合作有成。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：同心同德，合作有成。",health:"留意作息",advice:"開運：穿紅色系，貴人在東南方，吉時7-9時。",color:"紅色系",number:"44、52",noble:"東南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷍",name:"火天大有 (大有卦) — 日正當中，豐收大有",jixiong:"大吉",summary:"日正當中，豐收大有。此卦上上之卦。",finance:"火天大有得大有氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：日正當中，豐收大有。",health:"留意作息",advice:"開運：穿紫色系，貴人在正南方，吉時8-10時。",color:"紫色系",number:"47、55",noble:"正南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷎",name:"地山謙 (謙卦) — 謙虛受益，萬民服也",jixiong:"大吉",summary:"謙虛受益，萬民服也。此卦上上之卦。",finance:"地山謙得謙氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：謙虛受益，萬民服也。",health:"留意作息",advice:"開運：穿粉色系，貴人在西南方，吉時9-11時。",color:"粉色系",number:"50、58",noble:"西南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷏",name:"雷地豫 (豫卦) — 歡豫和樂，利於建功",jixiong:"吉",summary:"歡豫和樂，利於建功。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：歡豫和樂，利於建功。",health:"留意作息",advice:"開運：穿白色系，貴人在正西方，吉時10-12時。",color:"白色系",number:"53、61",noble:"正西",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷐",name:"澤雷隨 (隨卦) — 隨遇而安，順勢而為",jixiong:"吉",summary:"隨遇而安，順勢而為。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：隨遇而安，順勢而為。",health:"留意作息",advice:"開運：穿金色系，貴人在西北方，吉時11-13時。",color:"金色系",number:"56、64",noble:"西北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷑",name:"山風蠱 (蠱卦) — 積弊須革，整頓更新",jixiong:"凶轉吉",summary:"積弊須革，整頓更新。此卦需謹慎。",finance:"先破後立，整頓後財運回升，適合處理呆帳與改革。",love:"積弊須革，整頓更新，感情需多包容。",career:"事業：積弊須革，整頓更新。",health:"留意作息",advice:"開運：穿黃色系，貴人在西南方，吉時12-14時。",color:"黃色系",number:"59、67",noble:"西南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷒",name:"地澤臨 (臨卦) — 居高臨下，恩威並施",jixiong:"吉",summary:"居高臨下，恩威並施。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：居高臨下，恩威並施。",health:"留意作息",advice:"開運：穿黑色系，貴人在正北方，吉時13-15時。",color:"黑色系",number:"62、70",noble:"正北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷓",name:"風地觀 (觀卦) — 觀察時變，以觀示人",jixiong:"平",summary:"觀察時變，以觀示人。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：觀察時變，以觀示人。",health:"留意作息",advice:"開運：穿綠色系，貴人在正東方，吉時14-16時。",color:"綠色系",number:"65、73",noble:"正東",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷔",name:"火雷噬嗑 (噬嗑卦) — 排除障礙，咬合亨通",jixiong:"平",summary:"排除障礙，咬合亨通。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：排除障礙，咬合亨通。",health:"留意作息",advice:"開運：穿紅色系，貴人在東南方，吉時15-17時。",color:"紅色系",number:"68、76",noble:"東南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷕",name:"山火賁 (賁卦) — 文飾美化，內實外華",jixiong:"小吉",summary:"文飾美化，內實外華。此卦需謹慎。",finance:"小財可得，積少成多，偏財不宜重壓，適合儲蓄與本業加薪。",love:"小有甜蜜，需主動製造儀式感。",career:"事業：文飾美化，內實外華。",health:"留意作息",advice:"開運：穿紫色系，貴人在正南方，吉時16-18時。",color:"紫色系",number:"71、79",noble:"正南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷖",name:"山地剝 (剝卦) — 剝落衰敗，守成為上",jixiong:"凶",summary:"剝落衰敗，守成為上。此卦需謹慎。",finance:"財運受阻，易破財、被拖欠，宜守財、修補漏洞，勿投資。",love:"口舌、冷戰多，桃花帶煞，易有第三者或舊情復燃干擾，宜在桃花位放仙人掌化煞或暫時冷靜。",career:"事業：剝落衰敗，守成為上。",health:"留意作息",advice:"開運：穿粉色系，貴人在西南方，吉時17-19時。",color:"粉色系",number:"74、82",noble:"西南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷗",name:"地雷復 (復卦) — 一陽來復，轉機將至",jixiong:"小吉",summary:"一陽來復，轉機將至。此卦需謹慎。",finance:"小財可得，積少成多，偏財不宜重壓，適合儲蓄與本業加薪。",love:"小有甜蜜，需主動製造儀式感。",career:"事業：一陽來復，轉機將至。",health:"留意作息",advice:"開運：穿白色系，貴人在正西方，吉時18-20時。",color:"白色系",number:"77、85",noble:"正西",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷘",name:"天雷无妄 (无妄卦) — 真誠無妄，順其自然",jixiong:"平",summary:"真誠無妄，順其自然。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：真誠無妄，順其自然。",health:"留意作息",advice:"開運：穿金色系，貴人在西北方，吉時7-9時。",color:"金色系",number:"80、88",noble:"西北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷙",name:"山天大畜 (大畜卦) — 厚積薄發，大有積蓄",jixiong:"大吉",summary:"厚積薄發，大有積蓄。此卦上上之卦。",finance:"山天大畜得大畜氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：厚積薄發，大有積蓄。",health:"留意作息",advice:"開運：穿黃色系，貴人在西南方，吉時8-10時。",color:"黃色系",number:"83、91",noble:"西南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷚",name:"山雷頤 (頤卦) — 養生頤養，慎言節食",jixiong:"平",summary:"養生頤養，慎言節食。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：養生頤養，慎言節食。",health:"留意作息",advice:"開運：穿黑色系，貴人在正北方，吉時9-11時。",color:"黑色系",number:"86、94",noble:"正北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷛",name:"澤風大過 (大過卦) — 負荷過重，量力而為",jixiong:"凶",summary:"負荷過重，量力而為。此卦需謹慎。",finance:"財運受阻，易破財、被拖欠，宜守財、修補漏洞，勿投資。",love:"口舌、冷戰多，桃花帶煞，易有第三者或舊情復燃干擾，宜在桃花位放仙人掌化煞或暫時冷靜。",career:"事業：負荷過重，量力而為。",health:"留意作息",advice:"開運：穿綠色系，貴人在正東方，吉時10-12時。",color:"綠色系",number:"89、97",noble:"正東",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷜",name:"坎為水 (坎卦) — 重險在前，守誠脫險",jixiong:"凶",summary:"重險在前，守誠脫險。此卦需謹慎。",finance:"財運受阻，易破財、被拖欠，宜守財、修補漏洞，勿投資。",love:"口舌、冷戰多，桃花帶煞，易有第三者或舊情復燃干擾，宜在桃花位放仙人掌化煞或暫時冷靜。",career:"事業：重險在前，守誠脫險。",health:"留意作息",advice:"開運：穿紅色系，貴人在東南方，吉時11-13時。",color:"紅色系",number:"92、100",noble:"東南",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷝",name:"離為火 (離卦) — 光明依附，文明之象",jixiong:"吉",summary:"光明依附，文明之象。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：光明依附，文明之象。",health:"留意作息",advice:"開運：穿紫色系，貴人在正南方，吉時12-14時。",color:"紫色系",number:"95、103",noble:"正南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷞",name:"澤山咸 (咸卦) — 感應相通，少男少女",jixiong:"大吉桃花",summary:"感應相通，少男少女。此卦上上之卦。",finance:"人緣財，靠口碑與異性貴人得財，適合業務、直播、自媒體。",love:"正桃花極旺，單身者易遇正緣，已婚者人緣桃花滿滿，利於求婚、表白、拍婚紗。桃花位在正西方，擺放粉晶、成雙成對物品催旺。",career:"事業：感應相通，少男少女。",health:"留意作息",advice:"開運：穿粉色系，貴人在西南方，吉時13-15時。",color:"粉色系",number:"98、106",noble:"西南",item:"粉水晶、紅繩",furniture:"黃水晶洞"},
+{symbol:"䷟",name:"雷風恆 (恆卦) — 恆久穩定，利於長久",jixiong:"大吉",summary:"恆久穩定，利於長久。此卦上上之卦。",finance:"雷風恆得恆氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：恆久穩定，利於長久。",health:"留意作息",advice:"開運：穿白色系，貴人在正西方，吉時14-16時。",color:"白色系",number:"2、10",noble:"正西",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷠",name:"天山遯 (遯卦) — 退避隱藏，急流勇退",jixiong:"平",summary:"退避隱藏，急流勇退。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：退避隱藏，急流勇退。",health:"留意作息",advice:"開運：穿金色系，貴人在西北方，吉時15-17時。",color:"金色系",number:"5、13",noble:"西北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷡",name:"雷天大壯 (大壯卦) — 壯大強盛，勿恃強凌弱",jixiong:"平",summary:"壯大強盛，勿恃強凌弱。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：壯大強盛，勿恃強凌弱。",health:"留意作息",advice:"開運：穿黃色系，貴人在西南方，吉時16-18時。",color:"黃色系",number:"8、16",noble:"西南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷢",name:"火地晉 (晉卦) — 旭日東升，晉升之象",jixiong:"大吉",summary:"旭日東升，晉升之象。此卦上上之卦。",finance:"火地晉得晉氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：旭日東升，晉升之象。",health:"留意作息",advice:"開運：穿黑色系，貴人在正北方，吉時17-19時。",color:"黑色系",number:"11、19",noble:"正北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷣",name:"地火明夷 (明夷卦) — 光明受損，韜光養晦",jixiong:"凶",summary:"光明受損，韜光養晦。此卦需謹慎。",finance:"財運受阻，易破財、被拖欠，宜守財、修補漏洞，勿投資。",love:"口舌、冷戰多，桃花帶煞，易有第三者或舊情復燃干擾，宜在桃花位放仙人掌化煞或暫時冷靜。",career:"事業：光明受損，韜光養晦。",health:"留意作息",advice:"開運：穿綠色系，貴人在正東方，吉時18-20時。",color:"綠色系",number:"14、22",noble:"正東",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷤",name:"風火家人 (家人卦) — 家和萬事興，齊家為本",jixiong:"吉",summary:"家和萬事興，齊家為本。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：家和萬事興，齊家為本。",health:"留意作息",advice:"開運：穿紅色系，貴人在東南方，吉時7-9時。",color:"紅色系",number:"17、25",noble:"東南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷥",name:"火澤睽 (睽卦) — 背道而馳，求同存異",jixiong:"平",summary:"背道而馳，求同存異。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：背道而馳，求同存異。",health:"留意作息",advice:"開運：穿紫色系，貴人在正南方，吉時8-10時。",color:"紫色系",number:"20、28",noble:"正南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷦",name:"水山蹇 (蹇卦) — 進退維谷，尋求貴人",jixiong:"凶",summary:"進退維谷，尋求貴人。此卦需謹慎。",finance:"財運受阻，易破財、被拖欠，宜守財、修補漏洞，勿投資。",love:"口舌、冷戰多，桃花帶煞，易有第三者或舊情復燃干擾，宜在桃花位放仙人掌化煞或暫時冷靜。",career:"事業：進退維谷，尋求貴人。",health:"留意作息",advice:"開運：穿粉色系，貴人在西南方，吉時9-11時。",color:"粉色系",number:"23、31",noble:"西南",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷧",name:"雷水解 (解卦) — 春雷解凍，困難解除",jixiong:"吉",summary:"春雷解凍，困難解除。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：春雷解凍，困難解除。",health:"留意作息",advice:"開運：穿白色系，貴人在正西方，吉時10-12時。",color:"白色系",number:"26、34",noble:"正西",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷨",name:"山澤損 (損卦) — 先損後益，捨得之道",jixiong:"平",summary:"先損後益，捨得之道。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：先損後益，捨得之道。",health:"留意作息",advice:"開運：穿金色系，貴人在西北方，吉時11-13時。",color:"金色系",number:"29、37",noble:"西北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷩",name:"風雷益 (益卦) — 增益受益，助人益己",jixiong:"大吉",summary:"增益受益，助人益己。此卦上上之卦。",finance:"風雷益得益氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：增益受益，助人益己。",health:"留意作息",advice:"開運：穿黃色系，貴人在西南方，吉時12-14時。",color:"黃色系",number:"32、40",noble:"西南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷪",name:"澤天夬 (夬卦) — 果斷決裂，去除小人",jixiong:"吉",summary:"果斷決裂，去除小人。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：果斷決裂，去除小人。",health:"留意作息",advice:"開運：穿黑色系，貴人在正北方，吉時13-15時。",color:"黑色系",number:"35、43",noble:"正北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷫",name:"天風姤 (姤卦) — 不期而遇，慎防誘惑",jixiong:"桃花",summary:"不期而遇，慎防誘惑。此卦需謹慎。",finance:"桃花帶財，因異性、合作、顏值經濟得財，但也易因情破財。",love:"桃花星動，易有邂逅、一見鍾情，但多為短暫緣分，露水桃花多，需帶眼識人。",career:"事業：不期而遇，慎防誘惑。",health:"留意作息",advice:"開運：穿綠色系，貴人在正東方，吉時14-16時。",color:"綠色系",number:"38、46",noble:"正東",item:"粉水晶、紅繩",furniture:"黃水晶洞"},
+{symbol:"䷬",name:"澤地萃 (萃卦) — 精英薈萃，利於聚集",jixiong:"吉",summary:"精英薈萃，利於聚集。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：精英薈萃，利於聚集。",health:"留意作息",advice:"開運：穿紅色系，貴人在東南方，吉時15-17時。",color:"紅色系",number:"41、49",noble:"東南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷭",name:"地風升 (升卦) — 步步高升，積小成大",jixiong:"大吉",summary:"步步高升，積小成大。此卦上上之卦。",finance:"地風升得升氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：步步高升，積小成大。",health:"留意作息",advice:"開運：穿紫色系，貴人在正南方，吉時16-18時。",color:"紫色系",number:"44、52",noble:"正南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷮",name:"澤水困 (困卦) — 困頓窮乏，守正待時",jixiong:"凶",summary:"困頓窮乏，守正待時。此卦需謹慎。",finance:"財運受阻，易破財、被拖欠，宜守財、修補漏洞，勿投資。",love:"口舌、冷戰多，桃花帶煞，易有第三者或舊情復燃干擾，宜在桃花位放仙人掌化煞或暫時冷靜。",career:"事業：困頓窮乏，守正待時。",health:"留意作息",advice:"開運：穿粉色系，貴人在西南方，吉時17-19時。",color:"粉色系",number:"47、55",noble:"西南",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷯",name:"水風井 (井卦) — 修井養人，固本培元",jixiong:"平",summary:"修井養人，固本培元。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：修井養人，固本培元。",health:"留意作息",advice:"開運：穿白色系，貴人在正西方，吉時18-20時。",color:"白色系",number:"50、58",noble:"正西",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷰",name:"澤火革 (革卦) — 汰舊換新，革命維新",jixiong:"吉",summary:"汰舊換新，革命維新。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：汰舊換新，革命維新。",health:"留意作息",advice:"開運：穿金色系，貴人在西北方，吉時7-9時。",color:"金色系",number:"53、61",noble:"西北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷱",name:"火風鼎 (鼎卦) — 鼎新立業，大器晚成",jixiong:"大吉",summary:"鼎新立業，大器晚成。此卦上上之卦。",finance:"火風鼎得鼎氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：鼎新立業，大器晚成。",health:"留意作息",advice:"開運：穿黃色系，貴人在西南方，吉時8-10時。",color:"黃色系",number:"56、64",noble:"西南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷲",name:"震為雷 (震卦) — 震動驚醒，戒慎恐懼",jixiong:"平",summary:"震動驚醒，戒慎恐懼。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：震動驚醒，戒慎恐懼。",health:"留意作息",advice:"開運：穿黑色系，貴人在正北方，吉時9-11時。",color:"黑色系",number:"59、67",noble:"正北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷳",name:"艮為山 (艮卦) — 知止則止，適可而止",jixiong:"平",summary:"知止則止，適可而止。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：知止則止，適可而止。",health:"留意作息",advice:"開運：穿綠色系，貴人在正東方，吉時10-12時。",color:"綠色系",number:"62、70",noble:"正東",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷴",name:"風山漸 (漸卦) — 循序漸進，女歸吉",jixiong:"吉",summary:"循序漸進，女歸吉。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：循序漸進，女歸吉。",health:"留意作息",advice:"開運：穿紅色系，貴人在東南方，吉時11-13時。",color:"紅色系",number:"65、73",noble:"東南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷵",name:"雷澤歸妹 (歸妹卦) — 出嫁之象，事不由己",jixiong:"凶",summary:"出嫁之象，事不由己。此卦需謹慎。",finance:"財運受阻，易破財、被拖欠，宜守財、修補漏洞，勿投資。",love:"口舌、冷戰多，桃花帶煞，易有第三者或舊情復燃干擾，宜在桃花位放仙人掌化煞或暫時冷靜。",career:"事業：出嫁之象，事不由己。",health:"留意作息",advice:"開運：穿紫色系，貴人在正南方，吉時12-14時。",color:"紫色系",number:"68、76",noble:"正南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷶",name:"雷火豐 (豐卦) — 豐盛之時，防盛極而衰",jixiong:"大吉",summary:"豐盛之時，防盛極而衰。此卦上上之卦。",finance:"雷火豐得豐氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：豐盛之時，防盛極而衰。",health:"留意作息",advice:"開運：穿粉色系，貴人在西南方，吉時13-15時。",color:"粉色系",number:"71、79",noble:"西南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷷",name:"火山旅 (旅卦) — 羈旅在外，隨遇而安",jixiong:"平",summary:"羈旅在外，隨遇而安。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：羈旅在外，隨遇而安。",health:"留意作息",advice:"開運：穿白色系，貴人在正西方，吉時14-16時。",color:"白色系",number:"74、82",noble:"正西",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷸",name:"巽為風 (巽卦) — 謙遜順從，無孔不入",jixiong:"小吉",summary:"謙遜順從，無孔不入。此卦需謹慎。",finance:"小財可得，積少成多，偏財不宜重壓，適合儲蓄與本業加薪。",love:"小有甜蜜，需主動製造儀式感。",career:"事業：謙遜順從，無孔不入。",health:"留意作息",advice:"開運：穿金色系，貴人在西北方，吉時15-17時。",color:"金色系",number:"77、85",noble:"西北",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷹",name:"兌為澤 (兌卦) — 喜悅和樂，以口才得利",jixiong:"吉",summary:"喜悅和樂，以口才得利。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：喜悅和樂，以口才得利。",health:"留意作息",advice:"開運：穿黃色系，貴人在西南方，吉時16-18時。",color:"黃色系",number:"80、88",noble:"西南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷺",name:"風水渙 (渙卦) — 渙散分離，凝聚人心",jixiong:"平",summary:"渙散分離，凝聚人心。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：渙散分離，凝聚人心。",health:"留意作息",advice:"開運：穿黑色系，貴人在正北方，吉時17-19時。",color:"黑色系",number:"83、91",noble:"正北",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷻",name:"水澤節 (節卦) — 節制有度，適可而止",jixiong:"吉",summary:"節制有度，適可而止。此卦需謹慎。",finance:"財運平順，努力有回報，利於正財，守成為主。",love:"關係穩定升溫，溝通順暢，適合約會與深度交流。",career:"事業：節制有度，適可而止。",health:"留意作息",advice:"開運：穿綠色系，貴人在正東方，吉時18-20時。",color:"綠色系",number:"86、94",noble:"正東",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷼",name:"風澤中孚 (中孚卦) — 誠信為本，孚信天下",jixiong:"大吉",summary:"誠信為本，孚信天下。此卦上上之卦。",finance:"風澤中孚得中孚氣，財運亨通，正偏財皆旺，適合投資、簽約、置產。流年財位配合更佳。",love:"感情和諧，家和萬事興，適合談婚論嫁，見家長。",career:"事業：誠信為本，孚信天下。",health:"留意作息",advice:"開運：穿紅色系，貴人在東南方，吉時7-9時。",color:"紅色系",number:"89、97",noble:"東南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷽",name:"雷山小過 (小過卦) — 小有過越，謹慎為上",jixiong:"平",summary:"小有過越，謹慎為上。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：小有過越，謹慎為上。",health:"留意作息",advice:"開運：穿紫色系，貴人在正南方，吉時8-10時。",color:"紫色系",number:"92、100",noble:"正南",item:"黃水晶、貔貅",furniture:"黃水晶洞"},
+{symbol:"䷾",name:"水火既濟 (既濟卦) — 事已完成，守成為要",jixiong:"小吉",summary:"事已完成，守成為要。此卦需謹慎。",finance:"小財可得，積少成多，偏財不宜重壓，適合儲蓄與本業加薪。",love:"小有甜蜜，需主動製造儀式感。",career:"事業：事已完成，守成為要。",health:"留意作息",advice:"開運：穿粉色系，貴人在西南方，吉時9-11時。",color:"粉色系",number:"95、103",noble:"西南",item:"黃水晶、貔貅",furniture:"流水聚寶盆"},
+{symbol:"䷿",name:"火水未濟 (未濟卦) — 事未成，未來可期",jixiong:"平",summary:"事未成，未來可期。此卦需謹慎。",finance:"財運持平，收支平衡，不宜借貸或高風險投資。",love:"感情平淡，宜多陪伴，少挑剔。",career:"事業：事未成，未來可期。",health:"留意作息",advice:"開運：穿白色系，貴人在正西方，吉時10-12時。",color:"白色系",number:"98、106",noble:"正西",item:"黃水晶、貔貅",furniture:"流水聚寶盆"}
+];
+const zodiacMap = {
+'鼠':{taohua:'酉(正西) - 本命桃花在正西，2026桃花星在西南，擺粉晶陣',caifu:'財位在東北與正南，東北放黃水晶洞',wen:'文昌在東北，書桌朝東北',yima:'驛馬在寅(東北東)'},
+'牛':{taohua:'午(正南) - 紅鸞在南，喜慶桃花',caifu:'財位在西北與正南',wen:'文昌在正南',yima:'驛馬在亥(西北)'},
+'虎':{taohua:'卯(正東) - 桃花在正東，2026咸池在東',caifu:'財位在東北與正西',wen:'文昌在正南偏東',yima:'驛馬在申(西南西)'},
+'兔':{taohua:'子(正北) - 桃花在正北，人緣旺',caifu:'財位在東南與西北',wen:'文昌在東南',yima:'驛馬在巳(東南)'},
+'龍':{taohua:'酉(正西) - 桃花帶財',caifu:'財位在正北與正西',wen:'文昌在西南',yima:'驛馬在寅(東北)'},
+'蛇':{taohua:'午(正南) - 天喜桃花',caifu:'財位在正西與正南',wen:'文昌在正西',yima:'驛馬在亥(西北)'},
+'馬':{taohua:'卯(正東) - 驛馬桃花，異地緣',caifu:'財位在正東與西北',wen:'文昌在西北',yima:'驛馬在申(西南)'},
+'羊':{taohua:'子(正北) - 桃花在北，利社交',caifu:'財位在正北與東南',wen:'文昌在正北',yima:'驛馬在巳(東南)'},
+'猴':{taohua:'酉(正西) - 桃花在酉，自帶魅力',caifu:'財位在東北與正東',wen:'文昌在東北',yima:'驛馬在寅(東北)'},
+'雞':{taohua:'午(正南) - 桃花在南，利演藝',caifu:'財位在東南與正南',wen:'文昌在東南偏南',yima:'驛馬在亥(西北)'},
+'狗':{taohua:'卯(正東) - 桃花在東，利合作',caifu:'財位在正北與正東',wen:'文昌在正北偏東',yima:'驛馬在申(西南)'},
+'豬':{taohua:'子(正北) - 桃花在北，貴人多',caifu:'財位在東南與西南',wen:'文昌在東南',yima:'驛馬在巳(東南)'},
+};
+function updateFengShui(curDeg){
+ const zodiac=document.getElementById('zodiacSel').value;
+ let deg = curDeg!==undefined?curDeg:Number(document.getElementById('slider').value);
+ let m=getMount(deg);
+ let baseCaifu=`當前指向${m.n}山(${Math.round(deg)}°)屬${m.ele}，${m.ele=='水'?'財遇水則發':m.ele=='火'?'火生土利名氣財':m.ele=='木'?'木旺利文創':'金土旺利不動產'}。2026八白正財在正南，一白偏財在西南，六白武曲在正西。`;
+ let baseTao=`當前${m.n}位為${getGua8(deg).n}卦，${['子','午','卯','酉'].includes(m.n)?'四正桃花位，人緣極旺':'非正桃花位'}。`;
+ let baseWen=`文昌位在巽(東南135°)，2026四綠在中宮，東南放文昌塔。`;
+ let baseSha=`五黃煞2026在西北，二黑病符在正東，太歲在午(南)，此方位勿動土，放銅錢葫蘆化煞。`;
+ if(zodiac && zodiacMap[zodiac]){
+   let z=zodiacMap[zodiac];
+   document.getElementById('caifu').innerText=`【${zodiac}】${z.caifu}。`+baseCaifu;
+   document.getElementById('taohua').innerText=`【${zodiac}】${z.taohua}。`+baseTao;
+   document.getElementById('wenchang').innerText=`【${zodiac}】${z.wen}，${z.yima}。`+baseWen;
+   document.getElementById('shaz').innerText=baseSha;
+ }else{
+   document.getElementById('caifu').innerText=baseCaifu+` 明財位放黃水晶洞，正南放流水。`;
+   document.getElementById('taohua').innerText=baseTao+` 通用桃花位正西，選生肖更準。`;
+   document.getElementById('wenchang').innerText=baseWen;
+   document.getElementById('shaz').innerText=baseSha;
+ }
+}
+function randomQuestion(){
+ const types=["綜合","財運","桃花","事業","置產","健康"];
+ document.getElementById('qType').value=types[Math.floor(Math.random()*types.length)];
+}
+function drawHexagram(){
+ const type=document.getElementById('qType').value;
+ let pool=hexagrams;
+ if(type=='財運') pool=hexagrams.filter(h=>h.finance.includes('財')||h.jixiong.includes('大吉'));
+ else if(type=='桃花') pool=hexagrams.filter(h=>h.love.includes('桃花')||h.jixiong.includes('桃花'));
+ else if(type=='事業') pool=hexagrams.filter(h=>h.career.includes('事業'));
+ const item=pool[Math.floor(Math.random()*pool.length)];
+ document.getElementById('hexName').innerText=item.symbol+' '+item.name+' '+item.jixiong;
+ document.getElementById('hexSummary').innerText=item.summary;
+ document.getElementById('hexFinance').innerText=item.finance+' 佈局：'+item.furniture;
+ document.getElementById('hexLove').innerText=item.love;
+ document.getElementById('hexCareer').innerText=item.career;
+ document.getElementById('hexHealth').innerText=item.health;
+ document.getElementById('hexAdvice').innerText=item.advice;
+ document.getElementById('hexColor').innerText=item.color;
+ document.getElementById('hexNum').innerText=item.number;
+ document.getElementById('hexNoble').innerText=item.noble+'方';
+ document.getElementById('hexItem').innerText=item.item;
+ document.getElementById('hexFurn').innerText=item.furniture;
+ const box=document.getElementById('resultBox');
+ box.style.display='block';
+ box.scrollIntoView({behavior:'smooth'});
+}
+updateCompass(0);
+updateFengShui(0);
+</script>
+</body>
+</html>
