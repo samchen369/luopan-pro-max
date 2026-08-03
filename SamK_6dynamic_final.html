@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sam.K 六術分流動態版</title>
+<style>
+:root{--gold:#D4AF37;--bg:#080808}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC",serif}
+body{background:#080808;color:#eee;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:12px}
+.header{width:100%;max-width:540px;display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #222;margin-bottom:12px}
+.logo{width:44px;height:44px;border-radius:12px;background:#1a1a16;border:1px solid #D4AF37;display:grid;place-items:center;color:var(--gold)}
+.card{width:100%;max-width:540px;background:#121212;border:1px solid #222;border-radius:18px;padding:14px;margin-bottom:12px}
+canvas{width:100%;height:auto;display:block;border-radius:50%}
+.btn{padding:8px 14px;border-radius:999px;border:1px solid #333;background:#1e1e1e;color:#fff;font-size:13px;cursor:pointer}
+.btn-gold{background:var(--gold);color:#111;border-color:var(--gold);font-weight:800}
+.zgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px}
+.zgrid button{padding:8px 0;border-radius:10px;border:1px solid #333;background:#1a1a1a;color:#fff;font-size:13px}
+.zgrid button.active{border-color:var(--gold);color:var(--gold);background:rgba(212,175,55,.15)}
+.info{display:flex;justify-content:space-around;text-align:center;margin:10px 0}
+.info b{color:var(--gold);font-size:14px}
+.info span{font-size:10px;opacity:.5;display:block}
+.six{border:1px solid rgba(212,175,55,.18);background:#12120F;border-radius:16px;padding:16px;margin-bottom:12px}
+.six h4{color:#D4AF37;font-size:14px;margin-bottom:6px}
+.six small{font-size:11px;opacity:.45;display:block;margin-bottom:8px}
+.six p{font-size:13px;line-height:1.85;opacity:.88}
+.tag{display:inline-block;padding:2px 7px;border-radius:999px;background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.2);font-size:10px;color:var(--gold);margin-left:6px}
+</style>
+</head>
+<body>
+<div class="header"><div class="logo">🪶</div><div><b style="color:var(--gold);letter-spacing:2px">Sam.K</b><div style="font-size:10px;opacity:.5;letter-spacing:3px">六門動態版</div></div></div>
+
+<div class="card">
+<canvas id="lp" width="600" height="600"></canvas>
+<div class="info"><div><b id="d1">286°</b><span>度數</span></div><div><b id="d2">乙山</b><span>面向</span></div><div><b id="d3">辛山</b><span>坐山</span></div><div><b id="d4">巽</b><span>卦</span></div></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<button class="btn btn-gold" id="en">啟用羅盤</button>
+<button class="btn" id="lk">鎖定</button>
+<input id="inDeg" type="number" placeholder="輸入度數" style="flex:1;min-width:80px;background:#111;border:1px solid #333;border-radius:8px;color:#fff;padding:8px">
+<button class="btn" id="ap">套用</button>
+</div>
+<input id="sl" type="range" min="0" max="360" value="286" style="width:100%;margin-top:10px">
+<div id="dbg" style="font-size:10px;color:#666;margin-top:6px">用Chrome開https才有感測器</div>
+</div>
+
+<div class="card">
+<div style="font-size:13px;font-weight:800;color:var(--gold)">點生肖，六門會跟著變</div>
+<div class="zgrid" id="zg"></div>
+</div>
+
+<div id="sixWrap" style="width:100%;max-width:540px"></div>
+
+<script>
+const MOUNTS=["子","癸","丑","艮","寅","甲","卯","乙","辰","巽","巳","丙","午","丁","未","坤","申","庚","酉","辛","戌","乾","亥","壬"];
+const BAGUA=["坎","艮","震","巽","離","坤","兌","乾"];
+const ZOD=["鼠","牛","虎","兔","龍","蛇","馬","羊","猴","雞","狗","豬"];
+const EARTH=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+const DIR_CN=["正北","北偏東","東北","東北偏東","東偏北","正東","東偏南","東南偏東","東南","南南東","南偏東","正南","南偏西","西南偏西","西南","西南偏西","西偏南","正西","西偏北","西北偏西","西北","西北偏北","北偏西"];
+const WEALTH_DIR=["北方","北方和東北","東北和東","正東","東南","正南","南和西南","西南","西和西北","正西","西北","北方和西北"];
+const PEACH_DIR=["西","南","東","北","西","南","東","北","西","南","東","北"];
+const CONFLICT_DIR=["正南","西南","西南偏西","正西","西北","西北偏北","正北","東北","東北偏東","正東","東南偏東","東南"];
+const STUCK={
+"鼠":["怕犯錯不敢動，一想就卡","錢一直流，存不住","人來了不敢接，怕又受傷"],
+"牛":["硬撐不轉彎，撞牆才知道痛","一直做沒人看見，悶著","錢袋子堆雜物，錢進不來"],
+"虎":["衝太快沒煞車，講完才後悔","脾氣上來，什麼都想掀了"],
+"兔":["怕得罪人不敢說不，委屈自己","選項太多，選到不敢選"],
+"龍":["想很大做很小，卡在面子","想被看見，但沒舞台"],
+"蛇":["什麼都悶心裡，悶到睡不好","想太多，越想越亂"],
+"馬":["跑太快沒方向，東跑西跑","靜不下來，一直滑手機"],
+"羊":["太軟不敢拒絕，被情緒拖著走","心太細，被一句話卡三天"],
+"猴":["點子多做不完，跳來跳去","三分鐘熱度，開始很嗨後面懶"],
+"雞":["挑太細，連自己都嫌累","嘴快，講完才想收回"],
+"狗":["太講義氣被凹還說沒關係","不信別人，什麼都自己扛"],
+"豬":["太舒服不想動，拖到最後","家裡太亂，氣就不順"]
+};
+const MONEY_TIP=["放透明存錢筒每天投10塊","放黃色盆栽不要放垃圾桶","放木盒裝發票","放圓葉小植物","放紅包袋168","放小夜燈保持亮","放聚寶盆別放刀剪","放黃水晶杯","放白碗裝硬幣","放金色存錢筒","放陶瓷狗石頭","放黑色石頭"];
+let selected=1, target=286, filtered=286, offset=0, locked=false, hasSensor=false;
+function mIdx(d){return Math.floor((((d%360)+360)%360+7.5)/15)%24;}
+function draw(a){
+ const eff=(a+offset+360)%360;
+ const c=document.getElementById('lp'), ctx=c.getContext('2d');
+ ctx.clearRect(0,0,600,600);ctx.fillStyle="#080808";ctx.fillRect(0,0,600,600);
+ ctx.save();ctx.translate(300,300);ctx.rotate(-a*Math.PI/180);
+ ctx.beginPath();ctx.arc(0,0,285,0,Math.PI*2);ctx.strokeStyle="#D4AF37";ctx.lineWidth=1.5;ctx.stroke();
+ for(let i=0;i<24;i++){const a0=(i*15-7.5-90)*Math.PI/180,a1=(i*15+7.5-90)*Math.PI/180;ctx.beginPath();ctx.moveTo(Math.cos(a0)*245,Math.sin(a0)*245);ctx.arc(0,0,285,a0,a1);ctx.lineTo(Math.cos(a1)*245,Math.sin(a1)*245);ctx.closePath();ctx.fillStyle=i%2?"rgba(212,175,55,.05)":"rgba(212,175,55,.1)";ctx.fill();ctx.strokeStyle="rgba(212,175,55,.15)";ctx.stroke();}
+ for(let i=0;i<24;i++){const deg=i*15, rad=(deg-90)*Math.PI/180, x=Math.cos(rad)*265, y=Math.sin(rad)*265;ctx.save();ctx.translate(x,y);let rot=rad+Math.PI/2;if(deg>90&&deg<270)rot+=Math.PI;ctx.rotate(rot);ctx.fillStyle=i%3==0?"#FFD86A":"#D4AF37";ctx.font=`${i%3==0?700:400} ${i%3==0?15:12}px serif`;ctx.textAlign="center";ctx.fillText(MOUNTS[i],0,0);ctx.restore();}
+ ctx.restore();
+ ctx.save();ctx.translate(300,300);
+ ctx.fillStyle="#e74c3c";ctx.beginPath();ctx.moveTo(0,-215);ctx.lineTo(-7,0);ctx.lineTo(7,0);ctx.closePath();ctx.fill();
+ ctx.beginPath();ctx.arc(0,0,48,0,Math.PI*2);ctx.fillStyle="#0a0a0a";ctx.fill();ctx.strokeStyle="#D4AF37";ctx.lineWidth=1.2;ctx.stroke();
+ ctx.fillStyle="#D4AF37";ctx.font="700 22px serif";ctx.textAlign="center";ctx.fillText(eff.toFixed(0)+"°",0,-6);
+ ctx.fillStyle="#888";ctx.font="11px sans-serif";ctx.fillText(MOUNTS[(mIdx(eff)+12)%24]+"山"+MOUNTS[mIdx(eff)]+"向",0,14);
+ ctx.restore();
+ document.getElementById('d1').innerText=eff.toFixed(0)+"°";
+ document.getElementById('d2').innerText=MOUNTS[mIdx(eff)]+"山";
+ document.getElementById('d3').innerText=MOUNTS[(mIdx(eff)+12)%24]+"山";
+ document.getElementById('d4').innerText=BAGUA[Math.floor((eff+22.5)/45)%8];
+ renderSix(eff);
+}
+function renderSix(eff){
+ const idx=mIdx(eff);
+ const sitting=MOUNTS[(idx+12)%24];
+ const facing=MOUNTS[idx];
+ const dir=DIR_CN[idx];
+ const z=ZOD[selected];
+ const earth=EARTH[selected];
+ const wealth=WEALTH_DIR[selected];
+ const peach=PEACH_DIR[selected];
+ const conflict=CONFLICT_DIR[selected];
+ const tip=MONEY_TIP[selected];
+ const phrases=STUCK[z];
+ const stuckIdx=(idx+selected)%phrases.length;
+ const stuck=phrases[stuckIdx];
+ const wrap=document.getElementById('sixWrap');
+ wrap.innerHTML=`
+ <div class="six"><h4>1 巒頭藏風<span class="tag">看風從哪漏</span></h4><small>學術：巒頭派 · 你現在面朝${facing}山 ${eff.toFixed(0)}°</small><p>你現在面朝<b style="color:#FFD86A">${dir} ${facing}山</b>，代表氣從${dir}進來。如果${dir}有窗沒擋，風直沖進去就是漏財，要有玄關或櫃子擋一下。明堂（客廳最亮處）要留空，錢才聚得住。</p></div>
+ <div class="six"><h4>2 玄空飛星<span class="tag">今年財在哪</span></h4><small>學術：玄空九星 · 2026九紫火運</small><p>屬${z}的你，2026年8白正財在<b style="color:#FFD86A">正東</b>，9紫喜事在正南。你現在轉到${facing}山${eff.toFixed(0)}°，${idx<6||idx>18?'偏北氣較冷，東邊要開燈補火':'偏南氣較燥，西邊放水杯平衡'}。${wealth}保持乾淨，財才進得來。</p></div>
+ <div class="six"><h4>3 八宅三合<span class="tag">你的本命方位</span></h4><small>學術：八宅·三合 · 生肖${z}專屬</small><p>生肖${z}(${earth})的人：<br>· 錢袋子在<b>${wealth}</b>：${tip}，不要放垃圾桶。<br>· 人緣位在<b>正${peach}方</b>：多去正${peach}坐，穿亮色。<br>· 吵架位在<b>${conflict}</b>：床、爐子不要壓這，掃乾淨就好。<br>你現在坐${sitting}山朝${facing}山，${facing===earth?'剛好對到本命，要穩住':'跟本命沒沖，還行'}。</p></div>
+ <div class="six"><h4>4 擇日<span class="tag">今天做什麼</span></h4><small>學術：擇日·董公擇日 · 面朝${facing}山</small><p>你面朝${facing}山，${facing}屬${idx%2==0?'陰':'陽'}，今天適合：<b>打掃${wealth}、整理${peach}方、開窗通${dir}</b>。不適合：在${conflict}鑽牆、跟屬${ZOD[(selected+6)%12]}的人硬吵。好日子就是氣順，家裡亮的地方先亮起來。</p></div>
+ <div class="six"><h4>5 奇門陽宅<span class="tag">家裡怎麼擺才順</span></h4><small>學術：奇門遁甲陽宅 · ${facing}山${BAGUA[Math.floor((eff+22.5)/45)%8]}門</small><p>· 大門：你朝${facing}山，氣口在${dir}，門後別堆鞋。<br>· 床：別壓${conflict}，會睡不好。床頭靠${sitting}山那面牆，有靠。<br>· 廁所：剛好在${conflict}最好，用髒壓吵架位。<br>· 桃花：想談戀愛，正${peach}放成對小物，燈保持亮。</p></div>
+ <div class="six" style="border-color:#D4AF37"><h4>6 易占·現在卡在哪<span class="tag">問婚姻財運專用</span></h4><small>學術：梅花易數·六爻 · 動態斷語</small><p style="font-size:15px;color:#FFD86A;font-weight:800">屬${z}的你，轉到${facing}山 ${eff.toFixed(0)}°，現在卡在「${stuck}」。</p><p style="margin-top:8px">· 婚姻：屬${z}人緣在正${peach}，你現在面朝${facing}山，${peach===dir?'剛好面對人緣位，多去那邊坐':'背對人緣位，難怪覺得沒人挺'}。少在${conflict}吵，吵了更卡。<br>· 財運：錢袋子在${wealth}，你現在朝${dir}，${wealth.includes(dir.slice(0,1))?'有對到財位，把那邊清乾淨錢會順':'沒對到財位，先把'+wealth+'清亮'}。<br>· 心態：${facing}山是${idx<8?'早晨氣，還在找方向':idx<16?'中午氣，想衝但怕錯':'晚上氣，想休息又焦慮'}，先把亮處弄亮，暗處清掉，人就順一半。</p></div>
+ `;
+}
+function anim(){if(!locked){filtered=filtered*0.92+target*0.08;draw(filtered);}requestAnimationFrame(anim);}anim();
+const zg=document.getElementById('zg');
+ZOD.forEach((z,i)=>{const b=document.createElement('button');b.innerText=z;b.onclick=()=>{selected=i;document.querySelectorAll('#zg button').forEach(x=>x.classList.remove('active'));b.classList.add('active');draw(filtered);};if(i===selected)b.classList.add('active');zg.appendChild(b);});
+document.getElementById('en').onclick=()=>{
+ if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+  DeviceOrientationEvent.requestPermission().then(r=>{if(r==='granted'){window.addEventListener('deviceorientation',e=>{let h=e.webkitCompassHeading??(360-e.alpha);if(h!=null){hasSensor=true;target=(h+offset+360)%360;document.getElementById('dbg').innerText='方位:'+h.toFixed(0)+'°';}},true);}});
+ }else{window.addEventListener('deviceorientation',e=>{let h=e.webkitCompassHeading??(360-e.alpha);if(h!=null){hasSensor=true;target=(h+offset+360)%360;}},true);}
+ document.getElementById('en').innerText='已啟用';
+};
+document.getElementById('lk').onclick=()=>{locked=!locked;document.getElementById('lk').innerText=locked?'解鎖':'鎖定';};
+document.getElementById('ap').onclick=()=>{const v=parseFloat(document.getElementById('inDeg').value);if(!isNaN(v)){if(hasSensor)offset=v-target;else{target=v;filtered=v;}draw(filtered);}};
+document.getElementById('sl').oninput=e=>{const v=parseFloat(e.target.value);if(hasSensor)offset=v-target;else{target=v;filtered=v;}draw(filtered);};
+draw(286);
+</script>
+</body>
+</html>
