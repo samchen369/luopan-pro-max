@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Sam.K 六術不卡版</title>
+<style>
+:root{--gold:#D4AF37;--bg:#080808}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,"PingFang TC",serif}
+body{background:#080808;color:#eee;display:flex;flex-direction:column;align-items:center;padding:12px}
+.header{width:100%;max-width:540px;display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #222;margin-bottom:10px}
+.card{width:100%;max-width:540px;background:#121212;border:1px solid #222;border-radius:18px;padding:14px;margin-bottom:12px}
+canvas{width:100%;aspect-ratio:1;display:block;border-radius:50%;background:#080808}
+.btn{padding:8px 14px;border-radius:999px;border:1px solid #333;background:#1e1e1e;color:#fff;font-size:13px}
+.btn-gold{background:#D4AF37;color:#111;border-color:#D4AF37;font-weight:800}
+.info{display:flex;justify-content:space-around;text-align:center;margin:10px 0}
+.info b{color:#D4AF37;font-size:14px}
+.info span{font-size:10px;opacity:.5;display:block}
+.zgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px}
+.zgrid button{padding:8px 0;border-radius:10px;border:1px solid #333;background:#1a1a1a;color:#fff}
+.zgrid button.active{border-color:#D4AF37;color:#D4AF37;background:rgba(212,175,55,.15)}
+.six{border:1px solid rgba(212,175,55,.18);background:#12120F;border-radius:16px;padding:16px;margin-bottom:10px}
+.six h4{color:#D4AF37;font-size:14px}
+.six small{opacity:.45;font-size:11px;display:block;margin:4px 0 8px}
+.six p{font-size:13px;line-height:1.85;opacity:.9}
+</style>
+</head>
+<body>
+<div class="header"><div style="width:40px;height:40px;border-radius:10px;border:1px solid #D4AF37;display:grid;place-items:center;color:#D4AF37">🪶</div><div><b style="color:#D4AF37;letter-spacing:2px">Sam.K</b><div style="font-size:10px;opacity:.5">不卡指針+八方版</div></div></div>
+
+<div class="card">
+<canvas id="lp" width="700" height="700"></canvas>
+<div class="info"><div><b id="d1">0°</b><span>度數</span></div><div><b id="d2">子山</b><span>面向</span></div><div><b id="d3">午山</b><span>坐山</span></div><div><b id="d4">坎</b><span>卦</span></div></div>
+<div style="display:flex;gap:6px"><button class="btn btn-gold" id="en">啟用羅盤</button><button class="btn" id="lk">鎖定</button><input id="inDeg" type="number" placeholder="度數如110" style="flex:1;background:#111;border:1px solid #333;border-radius:8px;color:#fff;padding:8px"><button class="btn" id="ap">套用</button></div>
+<input id="sl" type="range" min="0" max="360" value="0" style="width:100%;margin-top:10px">
+<div id="dbg" style="font-size:10px;color:#666;margin-top:4px">需用https+Chrome開，轉動手機試試</div>
+</div>
+
+<div class="card"><div style="color:#D4AF37;font-weight:800;font-size:13px">點生肖，六門跟著變</div><div class="zgrid" id="zg"></div></div>
+<div id="sixWrap" style="width:100%;max-width:540px"></div>
+
+<script>
+const MOUNTS=["子","癸","丑","艮","寅","甲","卯","乙","辰","巽","巳","丙","午","丁","未","坤","申","庚","酉","辛","戌","乾","亥","壬"];
+const DIRS=["正北","北偏東","東北","東北偏東","東偏北","正東","東偏南","東南偏東","東南","南南東","南偏東","正南","南偏西","西南偏西","西南","西南偏西","西偏南","正西","西偏北","西北偏西","西北","西北偏北","北偏西","正北偏西"];
+const BAGUA=["坎","艮","震","巽","離","坤","兌","乾"];
+const CARD=["北","東北","東","東南","南","西南","西","西北"];
+const ZOD=["鼠","牛","虎","兔","龍","蛇","馬","羊","猴","雞","狗","豬"];
+const EARTH=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+const WEALTH=["北方","北方+東北","東北+東","正東","東南","正南","南+西南","西南","西+西北","正西","西北","北方+西北"];
+const PEACH=["西","南","東","北","西","南","東","北","西","南","東","北"];
+const CONFLICT=["正南","西南","西南偏西","正西","西北","西北偏北","正北","東北","東北偏東","正東","東南偏東","東南"];
+const STUCK={
+"鼠":["怕犯錯不敢動","錢一直流存不住","人來了不敢接"],
+"牛":["硬撐不轉彎","一直做沒人看見","錢袋子堆雜物"],
+"虎":["衝太快沒煞車","脾氣上來講太重"],
+"兔":["怕得罪人不敢說不","選項太多不敢選"],
+"龍":["想很大做很小","想被看見沒舞台"],
+"蛇":["悶心裡不講","想太多睡不好"],
+"馬":["跑太快沒方向","靜不下來一直滑"],
+"羊":["太軟不敢拒絕","被一句話卡三天"],
+"猴":["點子多做不完","三分鐘熱度"],
+"雞":["挑太細累死自己","嘴快講完後悔"],
+"狗":["太講義氣被凹","什麼都自己扛"],
+"豬":["太舒服不想動","家裡亂氣不順"]
+};
+let selected=1, target=0, filtered=0, offset=0, locked=false, hasSensor=false;
+function mIdx(d){return Math.floor((((d%360)+360)%360+7.5)/15)%24;}
+function draw(a){
+ const eff=(a+offset+360)%360;
+ const c=document.getElementById('lp'), ctx=c.getContext('2d');
+ ctx.clearRect(0,0,700,700);ctx.fillStyle="#080808";ctx.fillRect(0,0,700,700);
+ ctx.save();ctx.translate(350,350);ctx.rotate(-a*Math.PI/180);
+ // 外圈金線
+ ctx.beginPath();ctx.arc(0,0,330,0,Math.PI*2);ctx.strokeStyle="#D4AF37";ctx.lineWidth=2;ctx.stroke();
+ ctx.beginPath();ctx.arc(0,0,325,0,Math.PI*2);ctx.strokeStyle="rgba(212,175,55,.3)";ctx.lineWidth=1;ctx.stroke();
+ // 24山扇形
+ for(let i=0;i<24;i++){const a0=(i*15-7.5-90)*Math.PI/180,a1=(i*15+7.5-90)*Math.PI/180;ctx.beginPath();ctx.moveTo(Math.cos(a0)*285,Math.sin(a0)*285);ctx.arc(0,0,325,a0,a1);ctx.lineTo(Math.cos(a1)*285,Math.sin(a1)*285);ctx.closePath();ctx.fillStyle=i%2?"rgba(212,175,55,.06)":"rgba(212,175,55,.12)";ctx.fill();ctx.strokeStyle="rgba(212,175,55,.15)";ctx.lineWidth=.5;ctx.stroke();}
+ // 24山字
+ for(let i=0;i<24;i++){const deg=i*15,rad=(deg-90)*Math.PI/180,x=Math.cos(rad)*305,y=Math.sin(rad)*305;ctx.save();ctx.translate(x,y);let rot=rad+Math.PI/2;if(deg>90&&deg<270)rot+=Math.PI;ctx.rotate(rot);ctx.fillStyle=i%3==0?"#FFD86A":"#D4AF37";ctx.font=`${i%3==0?700:400} ${i%3==0?17:13}px serif`;ctx.textAlign="center";ctx.fillText(MOUNTS[i],0,0);ctx.restore();}
+ // 8方位內圈
+ ctx.beginPath();ctx.arc(0,0,250,0,Math.PI*2);ctx.strokeStyle="rgba(212,175,55,.25)";ctx.lineWidth=1;ctx.stroke();
+ ctx.beginPath();ctx.arc(0,0,210,0,Math.PI*2);ctx.strokeStyle="rgba(212,175,55,.15)";ctx.stroke();
+ for(let i=0;i<8;i++){const deg=i*45,rad=(deg-90)*Math.PI/180,x=Math.cos(rad)*230,y=Math.sin(rad)*230;ctx.save();ctx.translate(x,y);ctx.fillStyle="#888";ctx.font="700 14px sans-serif";ctx.textAlign="center";ctx.fillText(CARD[i],0,0);ctx.restore();}
+ // 八卦
+ for(let i=0;i<8;i++){const deg=i*45,rad=(deg-90)*Math.PI/180,x=Math.cos(rad)*180,y=Math.sin(rad)*180;ctx.save();ctx.translate(x,y);ctx.fillStyle="#555";ctx.font="12px serif";ctx.textAlign="center";ctx.fillText(BAGUA[i],0,0);ctx.restore();}
+ ctx.restore();
+ // 指針 - 固定不轉，永遠指上方
+ ctx.save();ctx.translate(350,350);
+ ctx.fillStyle="#e74c3c";ctx.beginPath();ctx.moveTo(0,-265);ctx.lineTo(-8,-20);ctx.lineTo(8,-20);ctx.closePath();ctx.fill();
+ ctx.fillStyle="#aaa";ctx.beginPath();ctx.moveTo(0,265);ctx.lineTo(-6,20);ctx.lineTo(6,20);ctx.closePath();ctx.fill();
+ ctx.beginPath();ctx.arc(0,0,55,0,Math.PI*2);ctx.fillStyle="#0a0a0a";ctx.fill();ctx.strokeStyle="#D4AF37";ctx.lineWidth=1.5;ctx.stroke();
+ ctx.fillStyle="#D4AF37";ctx.font="700 24px serif";ctx.textAlign="center";ctx.fillText(eff.toFixed(0)+"°",0,-8);
+ ctx.fillStyle="#888";ctx.font="12px sans-serif";ctx.fillText(MOUNTS[(mIdx(eff)+12)%24]+"山"+MOUNTS[mIdx(eff)]+"向",0,14);
+ ctx.restore();
+ document.getElementById('d1').innerText=eff.toFixed(0)+"°";
+ document.getElementById('d2').innerText=MOUNTS[mIdx(eff)]+"山 "+DIRS[mIdx(eff)];
+ document.getElementById('d3').innerText=MOUNTS[(mIdx(eff)+12)%24]+"山";
+ document.getElementById('d4').innerText=BAGUA[Math.floor((eff+22.5)/45)%8];
+ renderSix(eff);
+}
+function renderSix(eff){
+ const idx=mIdx(eff), facing=MOUNTS[idx], sitting=MOUNTS[(idx+12)%24], dir=DIRS[idx], z=ZOD[selected];
+ const wealth=WEALTH[selected], peach=PEACH[selected], conflict=CONFLICT[selected];
+ const phrases=STUCK[z]; const stuck=phrases[(idx+selected)%phrases.length];
+ const wrap=document.getElementById('sixWrap');
+ wrap.innerHTML=`
+ <div class="six"><h4>1 巒頭藏風｜錢從哪漏</h4><small>學術：巒頭 · 面朝${facing}山${eff.toFixed(0)}° ${dir}</small><p>你現在面朝<b style="color:#FFD86A">${dir} ${facing}山</b>，風從${dir}來。${dir.includes('北')?'北風較冷，門口要擋':'南風直沖，要玄關擋'}。明堂客廳最亮處要空，錢才聚。</p></div>
+ <div class="six"><h4>2 玄空飛星｜今年財在哪</h4><small>九運2024-2043 · 屬${z}</small><p>屬${z}的，2026年8白財在正東，9紫喜事在正南。你轉到${facing}山${eff.toFixed(0)}°，${idx>=3&&idx<=9?'剛好對到東邊財位，東邊開燈':'東邊要亮起來'}。${wealth}保持乾淨。</p></div>
+ <div class="six"><h4>3 八宅三合｜本命方位</h4><small>生肖${z}(${EARTH[selected]})專屬</small><p>· 錢袋子在<b>${wealth}</b><br>· 人緣在<b>正${peach}方</b><br>· 吵架位在<b>${conflict}</b>不要放床爐<br>你坐${sitting}山朝${facing}山，背靠${sitting}山有靠。</p></div>
+ <div class="six"><h4>4 擇日｜今天適合做什麼</h4><small>面朝${facing}山</small><p>今天適合打掃${wealth}、整理正${peach}方、開${dir}窗通風。不適合在${conflict}鑽牆、跟屬${ZOD[(selected+6)%12]}的吵。</p></div>
+ <div class="six"><h4>5 奇門陽宅｜家裡怎麼擺</h4><small>${BAGUA[Math.floor((eff+22.5)/45)%8]}門 · ${facing}山</small><p>大門氣口在${dir}，門後別堆鞋。床別壓${conflict}，廁所壓${conflict}最好。想談戀愛正${peach}放成對物。</p></div>
+ <div class="six" style="border-color:#D4AF37"><h4>6 易占｜現在卡在哪</h4><small>屬${z} · ${facing}山${eff.toFixed(0)}°</small><p style="color:#FFD86A;font-weight:800;font-size:15px">屬${z}的你，轉到${facing}山${eff.toFixed(0)}°，現在卡在「${stuck}」。</p><p style="margin-top:6px">婚姻：人緣在正${peach}，少在${conflict}吵。財運：錢袋子在${wealth}，清亮就會順。心態：${facing}山是${idx<8?'早上找方向':idx<16?'中午想衝': '晚上想休息'}，先把亮處弄亮。</p></div>
+ `;
+}
+function anim(){if(!locked){filtered=filtered*0.85+target*0.15;draw(filtered);}requestAnimationFrame(anim);}anim();
+const zg=document.getElementById('zg');ZOD.forEach((z,i)=>{const b=document.createElement('button');b.innerText=z;b.onclick=()=>{selected=i;document.querySelectorAll('#zg button').forEach(x=>x.classList.remove('active'));b.classList.add('active');draw(filtered);};if(i===selected)b.classList.add('active');zg.appendChild(b);});
+document.getElementById('en').onclick=()=>{
+ const handler=e=>{let h=e.webkitCompassHeading; if(h==null&&e.alpha!=null)h=360-e.alpha; if(h!=null){hasSensor=true;target=(h+offset+360)%360;document.getElementById('dbg').innerText='感測中:'+h.toFixed(0)+'°';}};
+ if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+  DeviceOrientationEvent.requestPermission().then(r=>{if(r==='granted'){window.addEventListener('deviceorientation',handler,true);document.getElementById('en').innerText='已啟用';}});
+ }else{window.addEventListener('deviceorientation',handler,true);document.getElementById('en').innerText='已啟用';}
+};
+document.getElementById('lk').onclick=()=>{locked=!locked;document.getElementById('lk').innerText=locked?'解鎖':'鎖定';if(!locked)anim();};
+document.getElementById('ap').onclick=()=>{const v=parseFloat(document.getElementById('inDeg').value);if(!isNaN(v)){if(hasSensor)offset=v-target;else{target=v;filtered=v;}draw(filtered);}};
+document.getElementById('sl').oninput=e=>{const v=parseFloat(e.target.value);if(hasSensor)offset=v-target;else{target=v;filtered=v;}draw(filtered);};
+draw(0);
+</script>
+</body>
+</html>
