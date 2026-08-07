@@ -181,6 +181,19 @@ const MEN_MEANING = {
   "開": "開通貴人（較吉）→ 適合門戶、財位"
 };
 
+/* 簡化固定對應：後天卦 → 門（僅供教學參考，非完整奇門排盤） */
+const BAGUA_TO_MEN = {
+  "坎": "休",  // 北
+  "坤": "死",  // 西南
+  "震": "傷",  // 東
+  "巽": "杜",  // 東南
+  "中": "—",
+  "乾": "開",  // 西北
+  "兌": "驚",  // 西
+  "艮": "生",  // 東北
+  "離": "景"   // 南
+};
+
 const GATES = {
   1: {
     title: "巒頭派／形勢派",
@@ -237,8 +250,15 @@ const GATES = {
     example: "財位取開門或休門且地氣厚者；床位避開死門、傷門。",
     points: ["八門：休生傷杜景死驚開", "吉門：休生開", "凶門：死驚傷", "60透地：地氣深淺"],
     dynamic: (sit, face) => {
-      const bagua = sitToBagua(sit);
-      return `目前坐【${sit}】向【${face}】（坐山屬後天【${bagua}】卦，方位${BAGUA_DIR[bagua]||""}）。\n\n八門白話直接說明：\n• 休門：${MEN_MEANING["休"]}\n• 生門：${MEN_MEANING["生"]}\n• 傷門：${MEN_MEANING["傷"]}\n• 杜門：${MEN_MEANING["杜"]}\n• 景門：${MEN_MEANING["景"]}\n• 死門：${MEN_MEANING["死"]}\n• 驚門：${MEN_MEANING["驚"]}\n• 開門：${MEN_MEANING["開"]}\n\n說明：完整奇門盤需依局數與時辰排八門落宮。本原型以坐山後天卦為基準，提供八門含義直解，方便先理解吉凶特質。實際落宮請再依完整奇門排盤或專業軟體確認。財位優先考慮休、生、開門特質的方位；床位與久坐處避開死、驚、傷門特質。`;
+      const sitBagua = sitToBagua(sit);
+      const faceBagua = sitToBagua(face);
+      const faceMen = BAGUA_TO_MEN[faceBagua] || "—";
+      const sitMen = BAGUA_TO_MEN[sitBagua] || "—";
+      return `【即時對應】正針目前指向【${face}山】（向）→ 後天【${faceBagua}】卦 → 簡化對應為【${faceMen}門】\n` +
+        `坐【${sit}山】→ 後天【${sitBagua}】卦 → 簡化對應為【${sitMen}門】\n\n` +
+        `目前指針方向的門：【${faceMen}門】\n含義：${MEN_MEANING[faceMen] || "—"}\n\n` +
+        `八門白話一覽：\n• 休門：${MEN_MEANING["休"]}\n• 生門：${MEN_MEANING["生"]}\n• 傷門：${MEN_MEANING["傷"]}\n• 杜門：${MEN_MEANING["杜"]}\n• 景門：${MEN_MEANING["景"]}\n• 死門：${MEN_MEANING["死"]}\n• 驚門：${MEN_MEANING["驚"]}\n• 開門：${MEN_MEANING["開"]}\n\n` +
+        `說明：此為「後天卦固定對應八門」的簡化教學用法，方便轉動時立刻知道指針落在哪個門的特質。完整奇門排盤需依局數、時辰計算八門落宮，實際應用請再以專業排盤確認。`;
     }
   },
   6: {
