@@ -3,178 +3,79 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Sam.K六門同參羅盤 · 即時動態白話版</title>
+<title>六門同參羅盤 · 即時對應白話版</title>
 <style>
   :root {
-    --bg: #0d0d0f;
-    --card: #16161a;
-    --border: #2a2a30;
-    --text: #e8e8ec;
-    --muted: #9a9aa3;
-    --accent: #3b82f6;
-    --gold: #d4a017;
-    --success: #22c55e;
-    --danger: #ef4444;
-    --tag-bg: #1e3a5f;
+    --bg: #0d0d0f; --card: #16161a; --border: #2a2a30; --text: #e8e8ec;
+    --muted: #9a9aa3; --accent: #3b82f6; --gold: #d4a017; --success: #22c55e;
+    --danger: #ef4444; --tag-bg: #1e3a5f;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body {
-    height: 100%; background: var(--bg); color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
-    overflow-x: hidden;
-  }
+  html, body { height: 100%; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif; overflow-x: hidden; }
   body { display: flex; flex-direction: column; min-height: 100dvh; }
-
-  header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 50;
-  }
-  header h1 { font-size: 1.05rem; font-weight: 600; }
-  .header-actions { display: flex; gap: 8px; }
-  .icon-btn {
-    width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
-    background: transparent; color: var(--text); display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem; cursor: pointer;
-  }
-
-  main {
-    flex: 1; display: flex; flex-direction: column; padding: 12px; gap: 12px;
-    max-width: 540px; margin: 0 auto; width: 100%;
-  }
-
-  .compass-card {
-    background: var(--card); border-radius: 16px; border: 1px solid var(--border);
-    padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px;
-  }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;
+    background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+  header h1 { font-size: 1.0rem; font-weight: 600; }
+  .icon-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
+    background: transparent; color: var(--text); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; }
+  main { flex: 1; display: flex; flex-direction: column; padding: 12px; gap: 12px; max-width: 540px; margin: 0 auto; width: 100%; }
+  .compass-card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 16px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px; }
   .compass-wrapper { position: relative; width: min(86vw, 340px); height: min(86vw, 340px); }
-  canvas#luopan {
-    width: 100%; height: 100%; border-radius: 50%;
-    background: #0a0a0c; box-shadow: 0 0 0 2px #333, inset 0 0 40px rgba(0,0,0,0.8);
-  }
-  .center-needle {
-    position: absolute; top: 50%; left: 50%; width: 4px; height: 28%;
-    margin-left: -2px; margin-top: -28%;
-    background: linear-gradient(to bottom, var(--danger) 0%, var(--danger) 45%, transparent 45%);
-    border-radius: 2px; pointer-events: none; z-index: 5;
-  }
-  .center-dot {
-    position: absolute; top: 50%; left: 50%; width: 14px; height: 14px;
-    margin: -7px 0 0 -7px; background: var(--gold); border-radius: 50%;
-    border: 2px solid #fff; z-index: 6; box-shadow: 0 0 8px rgba(212,160,23,0.6);
-  }
+  canvas#luopan { width: 100%; height: 100%; border-radius: 50%; background: #0a0a0c;
+    box-shadow: 0 0 0 2px #333, inset 0 0 40px rgba(0,0,0,0.8); }
+  .center-needle { position: absolute; top: 50%; left: 50%; width: 4px; height: 28%; margin-left: -2px; margin-top: -28%;
+    background: linear-gradient(to bottom, var(--danger) 0%, var(--danger) 45%, transparent 45%); border-radius: 2px; pointer-events: none; z-index: 5; }
+  .center-dot { position: absolute; top: 50%; left: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px;
+    background: var(--gold); border-radius: 50%; border: 2px solid #fff; z-index: 6; box-shadow: 0 0 8px rgba(212,160,23,0.6); }
   .heading-display { text-align: center; font-size: 1.45rem; font-weight: 600; color: var(--gold); }
   .heading-sub { font-size: 0.85rem; color: var(--muted); margin-top: 2px; text-align: center; }
-
   .controls { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; width: 100%; }
-  .btn {
-    padding: 10px 18px; border-radius: 10px; border: none; font-size: 0.95rem;
-    font-weight: 500; cursor: pointer; transition: background 0.15s, transform 0.1s;
-  }
+  .btn { padding: 10px 18px; border-radius: 10px; border: none; font-size: 0.95rem; font-weight: 500; cursor: pointer; }
   .btn:active { transform: scale(0.97); }
   .btn-primary { background: var(--accent); color: #fff; flex: 1; min-width: 140px; }
-  .btn-primary:disabled { background: #374151; color: #9ca3af; cursor: not-allowed; }
+  .btn-primary:disabled { background: #374151; color: #9ca3af; }
   .btn-secondary { background: #1f2937; color: var(--text); border: 1px solid var(--border); }
   .btn-success { background: var(--success); color: #fff; }
-
-  .status-bar {
-    width: 100%; padding: 8px 12px; border-radius: 8px; background: #1a1a1e;
-    font-size: 0.8rem; color: var(--muted); text-align: center;
-  }
+  .status-bar { width: 100%; padding: 8px 12px; border-radius: 8px; background: #1a1a1e; font-size: 0.8rem; color: var(--muted); text-align: center; }
   .status-bar.active { color: var(--success); }
   .status-bar.error { color: var(--danger); }
-
-  .offset-row {
-    display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center;
-    font-size: 0.85rem; color: var(--muted);
-  }
-  .offset-row input[type="number"] {
-    width: 70px; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--border);
-    background: #111; color: var(--text); text-align: center;
-  }
-
-  /* 即時動態解說區 */
-  .live-card {
-    background: var(--card); border-radius: 16px; border: 1px solid var(--border);
-    padding: 14px 16px;
-  }
-  .live-card h2 {
-    font-size: 0.9rem; color: var(--gold); margin-bottom: 8px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .live-card h2::before {
-    content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--success);
-    display: inline-block; animation: pulse 1.5s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  .live-content {
-    font-size: 0.9rem; line-height: 1.65; color: var(--text);
-    background: #1a1a1e; border-radius: 8px; padding: 12px;
-    border-left: 3px solid var(--success);
-    min-height: 4.5em;
-  }
-
-  .gates-card {
-    background: var(--card); border-radius: 16px; border: 1px solid var(--border); overflow: hidden;
-  }
-  .gates-tabs {
-    display: flex; overflow-x: auto; border-bottom: 1px solid var(--border); scrollbar-width: none;
-  }
+  .offset-row { display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center; font-size: 0.85rem; color: var(--muted); }
+  .offset-row input[type="number"] { width: 70px; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--border); background: #111; color: var(--text); text-align: center; }
+  .live-card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 14px 16px; }
+  .live-card h2 { font-size: 0.9rem; color: var(--gold); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .live-card h2::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--success); display: inline-block; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .live-content { font-size: 0.9rem; line-height: 1.65; color: var(--text); background: #1a1a1e; border-radius: 8px; padding: 12px; border-left: 3px solid var(--success); min-height: 4.5em; white-space: pre-line; }
+  .gates-card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; }
+  .gates-tabs { display: flex; overflow-x: auto; border-bottom: 1px solid var(--border); scrollbar-width: none; }
   .gates-tabs::-webkit-scrollbar { display: none; }
-  .gate-tab {
-    flex: 0 0 auto; padding: 12px 14px; font-size: 0.85rem; color: var(--muted);
-    background: transparent; border: none; border-bottom: 2px solid transparent;
-    cursor: pointer; white-space: nowrap;
-  }
+  .gate-tab { flex: 0 0 auto; padding: 12px 14px; font-size: 0.85rem; color: var(--muted); background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; }
   .gate-tab.active { color: var(--gold); border-bottom-color: var(--gold); font-weight: 600; }
-
   .gate-content { padding: 16px; font-size: 0.9rem; line-height: 1.7; color: var(--text); }
   .gate-content h3 { font-size: 1.05rem; color: var(--gold); margin-bottom: 10px; }
   .gate-content .section { margin-bottom: 14px; }
-  .gate-content .section-title {
-    font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-bottom: 4px;
-    letter-spacing: 0.03em;
-  }
-  .gate-content .plain {
-    background: #1a1a1e; border-radius: 8px; padding: 12px 14px; margin-top: 6px;
-    border-left: 3px solid var(--accent);
-  }
-  .gate-content .example {
-    background: #1a1a1e; border-radius: 8px; padding: 12px 14px; margin-top: 6px;
-    border-left: 3px solid var(--gold);
-  }
-  .gate-content .dynamic-box {
-    background: #14261a; border-radius: 8px; padding: 12px 14px; margin-top: 6px;
-    border-left: 3px solid var(--success);
-  }
-  .gate-content .tag {
-    display: inline-block; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px;
-    background: var(--tag-bg); color: #93c5fd; margin-right: 6px; margin-bottom: 6px;
-  }
+  .gate-content .section-title { font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-bottom: 4px; }
+  .gate-content .plain { background: #1a1a1e; border-radius: 8px; padding: 12px 14px; margin-top: 6px; border-left: 3px solid var(--accent); white-space: pre-line; }
+  .gate-content .example { background: #1a1a1e; border-radius: 8px; padding: 12px 14px; margin-top: 6px; border-left: 3px solid var(--gold); white-space: pre-line; }
+  .gate-content .dynamic-box { background: #14261a; border-radius: 8px; padding: 12px 14px; margin-top: 6px; border-left: 3px solid var(--success); white-space: pre-line; }
+  .gate-content .tag { display: inline-block; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; background: var(--tag-bg); color: #93c5fd; margin-right: 6px; margin-bottom: 6px; }
   .gate-content ul { padding-left: 1.2em; margin-top: 6px; }
   .gate-content li { margin-bottom: 4px; color: var(--muted); font-size: 0.88rem; }
-
-  .lock-badge {
-    position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.75);
-    color: var(--gold); font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; z-index: 10;
-  }
+  .lock-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.75); color: var(--gold); font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; z-index: 10; }
   .hidden { display: none !important; }
-
   footer { text-align: center; padding: 16px; font-size: 0.75rem; color: var(--muted); }
 </style>
 </head>
 <body>
   <header>
-    <h1>Sam.K六門同參羅盤 · 即時動態白話</h1>
-    <div class="header-actions">
+    <h1>六門同參羅盤 · 即時對應白話</h1>
+    <div style="display:flex;gap:8px">
       <button class="icon-btn" id="btnLock" title="鎖定方位">🔒</button>
       <button class="icon-btn" id="btnInfo" title="說明">ⓘ</button>
     </div>
   </header>
-
   <main>
     <div class="compass-card">
       <div class="compass-wrapper">
@@ -192,17 +93,13 @@
       </div>
       <div class="offset-row">
         <label>真北偏移（台灣建議 −4.2°）</label>
-        <input type="number" id="offsetInput" value="-4.2" step="0.1">
-        <span>°</span>
+        <input type="number" id="offsetInput" value="-4.2" step="0.1"><span>°</span>
       </div>
     </div>
 
-    <!-- 即時動態解說（隨方位改變） -->
     <div class="live-card">
       <h2>即時方位白話（隨轉動更新）</h2>
-      <div class="live-content" id="liveText">
-        請先啟動陀螺儀，然後轉動手機。此處會依目前指向的24山，即時給出對應白話解說。
-      </div>
+      <div class="live-content" id="liveText">請先啟動陀螺儀，然後轉動手機。此處會依目前指向的24山，即時給出坐向與對應白話。</div>
     </div>
 
     <div class="gates-card">
@@ -217,148 +114,146 @@
       <div class="gate-content" id="gateContent"></div>
     </div>
   </main>
-
   <footer>
-    Sam.K六門同參學術總盤 · 即時動態白話版 · 請於 HTTPS 環境使用<br>
-    轉動手機時，上方「即時方位白話」與下方各門動態區塊會同步更新
+    六門同參學術總盤 · 即時對應白話版 · 請於 HTTPS 環境使用<br>
+    轉動時上方即時白話與下方各門動態區塊會同步更新；八門／八宅／飛星已盡量直接標示對應
   </footer>
 
 <script>
-/* ===================== 24山與對宮 ===================== */
-const M24 = [
-  "壬","子","癸","丑","艮","寅","甲","卯","乙","辰","巽","巳",
-  "丙","午","丁","未","坤","申","庚","酉","辛","戌","乾","亥"
-];
-/* 對宮（向） */
+const M24 = ["壬","子","癸","丑","艮","寅","甲","卯","乙","辰","巽","巳","丙","午","丁","未","坤","申","庚","酉","辛","戌","乾","亥"];
 const OPPOSITE = {
-  "壬":"丙","子":"午","癸":"丁","丑":"未","艮":"坤","寅":"申",
-  "甲":"庚","卯":"酉","乙":"辛","辰":"戌","巽":"乾","巳":"亥",
-  "丙":"壬","午":"子","丁":"癸","未":"丑","坤":"艮","申":"寅",
-  "庚":"甲","酉":"卯","辛":"乙","戌":"辰","乾":"巽","亥":"巳"
+  "壬":"丙","子":"午","癸":"丁","丑":"未","艮":"坤","寅":"申","甲":"庚","卯":"酉","乙":"辛","辰":"戌","巽":"乾","巳":"亥",
+  "丙":"壬","午":"子","丁":"癸","未":"丑","坤":"艮","申":"寅","庚":"甲","酉":"卯","辛":"乙","戌":"辰","乾":"巽","亥":"巳"
 };
-
 function getMountain(heading) {
   let h = ((heading % 360) + 360) % 360;
-  let idx = Math.floor(((h + 7.5) % 360) / 15);
-  return M24[idx];
+  return M24[Math.floor(((h + 7.5) % 360) / 15)];
 }
 
-/* 各山簡易特質（用於即時解說） */
 const MOUNTAIN_TRAIT = {
-  "壬": "水氣較重，宜沉穩、收藏，注意背後靠山是否穩固。",
-  "子": "正北水位，主智慧與流動，前方宜開闊，後方宜有靠。",
-  "癸": "水尾之氣，宜細水長流，避免急躁沖射。",
-  "丑": "土氣凝滯，宜穩健累積，注意左右砂手是否有情。",
-  "艮": "山土之氣，主停止與積蓄，適合穩固基礎。",
-  "寅": "木氣初生，主生發，前方宜有空間讓氣舒展。",
-  "甲": "陽木之氣，主成長與條理，宜保持通道順暢。",
-  "卯": "正東木位，主仁與生機，左右宜平衡。",
-  "乙": "陰木之氣，主柔順延伸，避免硬直沖射。",
-  "辰": "濕土之氣，主蓄水與變化，注意排水與明堂。",
-  "巽": "風木之氣，主流通與文采，宜氣流通暢。",
-  "巳": "火氣初起，主文明與展示，前方忌逼仄。",
-  "丙": "陽火之氣，主禮與光明，宜明亮開闊。",
-  "午": "正南火位，主熱情與名聲，後方宜有靠、前方忌沖。",
-  "丁": "陰火之氣，主細膩文明，適合文昌與學習。",
-  "未": "燥土之氣，主收成與穩定，注意燥氣過重。",
-  "坤": "地土之氣，主包容與承載，適合厚實根基。",
-  "申": "金氣初斂，主肅殺與決斷，宜收斂有度。",
-  "庚": "陽金之氣，主義與剛強，注意過剛則折。",
-  "酉": "正西金位，主收穫與決斷，左右宜平衡。",
-  "辛": "陰金之氣，主細膩與變革，避免尖銳沖射。",
-  "戌": "燥土之氣，主收藏與邊界，注意閉塞。",
-  "乾": "天金之氣，主領袖與剛健，宜有開闊氣勢。",
-  "亥": "水氣初生，主智慧萌芽，宜柔順流動。"
+  "壬":"水氣較重，宜沉穩收藏。","子":"正北水位，主智慧流動。","癸":"水尾之氣，宜細水長流。",
+  "丑":"土氣凝滯，宜穩健累積。","艮":"山土之氣，主停止積蓄。","寅":"木氣初生，主生發。",
+  "甲":"陽木之氣，主成長條理。","卯":"正東木位，主仁與生機。","乙":"陰木之氣，主柔順延伸。",
+  "辰":"濕土之氣，主蓄水變化。","巽":"風木之氣，主流通文采。","巳":"火氣初起，主文明展示。",
+  "丙":"陽火之氣，主禮與光明。","午":"正南火位，主熱情名聲。","丁":"陰火之氣，主細膩文明。",
+  "未":"燥土之氣，主收成穩定。","坤":"地土之氣，主包容承載。","申":"金氣初斂，主肅殺決斷。",
+  "庚":"陽金之氣，主義與剛強。","酉":"正西金位，主收穫決斷。","辛":"陰金之氣，主細膩變革。",
+  "戌":"燥土之氣，主收藏邊界。","乾":"天金之氣，主領袖剛健。","亥":"水氣初生，主智慧萌芽。"
 };
 
-/* ===================== Sam.K六門完整資料 + 動態函式 ===================== */
+const BAGUA_DIR = {
+  "坎":"北(壬子癸)","坤":"西南(未坤申)","震":"東(甲卯乙)","巽":"東南(辰巽巳)",
+  "乾":"西北(戌乾亥)","兌":"西(庚酉辛)","艮":"東北(丑艮寅)","離":"南(丙午丁)"
+};
+
+function sitToBagua(sit) {
+  if (["壬","子","癸"].includes(sit)) return "坎";
+  if (["未","坤","申"].includes(sit)) return "坤";
+  if (["甲","卯","乙"].includes(sit)) return "震";
+  if (["辰","巽","巳"].includes(sit)) return "巽";
+  if (["戌","乾","亥"].includes(sit)) return "乾";
+  if (["庚","酉","辛"].includes(sit)) return "兌";
+  if (["丑","艮","寅"].includes(sit)) return "艮";
+  if (["丙","午","丁"].includes(sit)) return "離";
+  return "—";
+}
+
+const EAST4_SIT = ["子","壬","癸","卯","甲","乙","午","丙","丁","巽","巳","寅"];
+const BAZHAI_MEANING = {
+  "生氣": "主健康、貴人、進財 → 適合睡覺、工作、放財位",
+  "天醫": "主貴人、健康、求助順利 → 適合床位、藥相關",
+  "延年": "主人際和諧、合作順利 → 適合客廳、臥室",
+  "伏位": "主平穩小吉 → 適合靜養或儲物",
+  "五鬼": "主是非、官非、火災、怪病 → 宜少停留，可作儲物",
+  "絕命": "主破財、意外、重病 → 最凶，宜空置或少用",
+  "禍害": "主口舌、小病、爭執 → 不宜作主要活動區",
+  "六煞": "主桃花是非、情緒不穩 → 注意人際與感情"
+};
+
+const MEN_MEANING = {
+  "休": "休養生息（較吉）→ 適合休息、財位",
+  "生": "生發之氣（吉）→ 適合事業、財位、床位",
+  "傷": "損傷官非 → 避免重要活動",
+  "杜": "堵塞不通 → 宜少用",
+  "景": "光明文書 → 適合書房、展示",
+  "死": "死氣停滯（凶）→ 不宜床位或久坐",
+  "驚": "驚嚇突發 → 注意安全",
+  "開": "開通貴人（較吉）→ 適合門戶、財位"
+};
+
 const GATES = {
   1: {
     title: "巒頭派／形勢派",
-    academic: "看龍、穴、砂、水",
+    academic: "楊筠松看龍、穴、砂、水",
     ring: "地盤正針 24 山",
-    plain: "白話來說，就是先看「風水的形」。風從哪裡來？房子後面有沒有靠山？前面有沒有開闊的明堂？左右有沒有砂手環抱？這些都是巒頭要看的重點。如果來龍有力、砂手有情、水口得位，氣就能聚；如果背後空曠、前方逼仄、左右沖射，氣就容易散或受損。",
-    how: "使用地盤正針格龍立向。先確定房屋的坐向，再觀察該坐向後方是否有靠、前方是否有明堂、左右砂水是否配合。",
-    example: "假設房子坐子向午：後面（子方）如果有山或建築物作為靠山，前面（午方）開闊有水或道路作為明堂，左右有情，就符合「藏風聚氣」的基本條件。",
-    points: ["龍：來脈是否有力、是否停蓄", "穴：建築基址是否得氣", "砂：左右護砂是否有情", "水：水口、明堂是否得位"],
-    dynamic: function(sit, face) {
-      return `目前正針指向【${sit}山】，若以此為「坐」，則向為【${face}】。\n白話：坐${sit}時，請檢查${sit}方（後方）是否有靠山或穩固建築物；${face}方（前方）是否開闊有明堂。左右砂手是否有情環抱。${MOUNTAIN_TRAIT[sit] || ""}`;
-    }
+    plain: "白話就是先看「形」。風從哪來？後面有沒有靠山？前面有沒有明堂？左右砂手有沒有情？來龍有力、砂手有情、水口得位就能聚氣；背後空、前方逼、左右沖就容易散氣。",
+    how: "用地盤正針確定坐向後，直接觀察該坐向的後方（靠山）、前方（明堂）、左右砂水。",
+    example: "坐子向午：子方（後）要有靠，午方（前）要開闊，左右有情，就符合藏風聚氣。",
+    points: ["龍：來脈是否有力", "穴：基址是否得氣", "砂：左右是否有情", "水：明堂水口是否得位"],
+    dynamic: (sit, face) => `正針指向【${face}山】＝向（前），對宮【${sit}山】＝坐（後）。\n白話：坐${sit}向${face}。請檢查【${sit}方】（後方）是否有靠山或穩固建築；【${face}方】（前方）是否開闊有明堂。左右砂手是否有情。${MOUNTAIN_TRAIT[sit]||""}`
   },
   2: {
     title: "玄空飛星／三元九運",
-    academic: "三元九運、玄空紫白訣",
-    ring: "飛星盤（依元運與坐向排布）",
-    plain: "白話來說，就是看「時間的氣場怎麼流動」。現在是九運，氣場重心與之前的八運不同。飛星會告訴你：財星飛到哪個方位、病星在哪、桃花在哪、文昌在哪。同一個房子，在不同年份，旺的位置會改變。",
-    how: "先定住宅坐向，再依當前元運（九運）排出山星與向星。流年、流月飛星再疊加，即可看出當年財位、病位、文昌位。",
-    example: "九運時期，一白、六白、八白等星曜的組合會影響各方位的吉凶層次。若某方飛入旺財星，適合作為財位或辦公室。",
-    points: ["元運：目前為九運（2024–2043）", "山星：影響人丁與健康", "向星：影響財祿與事業", "流年飛星：每年疊加變化"],
-    dynamic: function(sit, face) {
-      return `目前若以【${sit}】為坐、【${face}】為向，九運飛星需依此坐向重新排布。\n白話：坐${sit}向${face}的住宅，財位、病位、文昌位會落在特定宮位。實際飛星盤需結合流年進一步計算。建議先鎖定此坐向，再查對應飛星。`;
+    academic: "蔣大鴻三元九運、玄空紫白訣",
+    ring: "飛星盤（依元運與坐向）",
+    plain: "白話就是看「時間氣場」。現在九運，財星、病星、桃花、文昌會飛到不同方位。同一個房子，不同年份旺的位置會變。",
+    how: "先鎖定坐向，依九運排出山星向星，再疊加流年飛星，才能得到當年具體財位病位。",
+    example: "九運中，旺星組合影響各宮吉凶層次。鎖定坐向後，仍需再排流年才能指出「今年財在哪」。",
+    points: ["元運：九運（2024–2043）", "山星：人丁健康", "向星：財祿事業", "流年：每年再疊加"],
+    dynamic: (sit, face) => {
+      return `目前鎖定坐【${sit}】向【${face}】。\n白話說明：\n1. 九運「下卦」飛星盤可依此坐向先排出山星與向星的基本盤。\n2. 但「流年飛星」每年不同，必須再把當年的飛星疊上去，才能準確指出「今年」財位、病位、文昌位在哪一宮。\n3. 因此本盤可鎖定坐向，卻無法省略流年計算直接給出當年具體宮位。若需當年精確位置，請再輸入流年或查飛星曆。\n（原型階段僅能提示此步驟，完整自動排盤需另建飛星資料庫。）`;
     }
   },
   3: {
     title: "八宅三合派",
     academic: "八宅明鏡＋天玉經三合",
     ring: "人盤中針（消砂撥砂）",
-    plain: "白話來說，就是看「人的命」和「房子的坐向」合不合。每個人有自己的命卦（東四命或西四命），房子也有坐向。如果命與宅相配，住起來較順；如果不配，可能在某些方位特別容易不順。",
-    how: "先算出宅主命卦，再對照住宅坐向，找出生氣、天醫、延年等吉方，以及五鬼、絕命等凶方。人盤中針用於消砂撥砂。",
-    example: "東四命人住東四宅較為相配；若住西四宅，則需特別注意凶方的使用。財位通常取生氣或延年方。",
-    points: ["命卦：東四命／西四命", "宅卦：依坐向劃分", "吉方：生氣、天醫、延年、伏位", "凶方：五鬼、絕命、禍害、六煞"],
-    dynamic: function(sit, face) {
-      const east = ["坎","離","震","巽","子","午","卯","甲","乙","寅","巳","壬","丙","癸","丁"];
-      const isEastSit = ["子","壬","癸","卯","甲","乙","午","丙","丁","巽","巳","寅"].includes(sit);
-      const houseType = isEastSit ? "東四宅傾向" : "西四宅傾向";
-      return `目前坐【${sit}】向【${face}】，此坐向屬${houseType}。\n白話：請對照宅主命卦。若命宅相配，生氣、延年等吉方較有利；若相沖，則五鬼、絕命等凶方需特別注意使用與化解。`;
+    plain: "白話就是看命與宅合不合。東四命配東四宅較順；西四命配西四宅較順。不合時，五鬼、絕命等凶方要特別小心。",
+    how: "算出宅主命卦，對照住宅坐向，找出吉方（生氣天醫延年伏位）與凶方（五鬼絕命禍害六煞）。",
+    example: "東四命住東四宅較配；若住西四宅，凶方使用需謹慎。財位多取生氣或延年。",
+    points: ["命卦：東四／西四", "宅卦：依坐向", "吉方：生氣天醫延年伏位", "凶方：五鬼絕命禍害六煞"],
+    dynamic: (sit, face) => {
+      const isEast = EAST4_SIT.includes(sit);
+      const type = isEast ? "東四宅" : "西四宅";
+      return `目前坐【${sit}】向【${face}】 → 屬【${type}】。\n白話直接說明各星含義：\n• 生氣：${BAZHAI_MEANING["生氣"]}\n• 天醫：${BAZHAI_MEANING["天醫"]}\n• 延年：${BAZHAI_MEANING["延年"]}\n• 伏位：${BAZHAI_MEANING["伏位"]}\n• 五鬼：${BAZHAI_MEANING["五鬼"]}\n• 絕命：${BAZHAI_MEANING["絕命"]}\n• 禍害：${BAZHAI_MEANING["禍害"]}\n• 六煞：${BAZHAI_MEANING["六煞"]}\n\n請用宅主命卦對照此宅型，找出哪幾個方位是吉、哪幾個是凶，再決定床位、財位、爐灶位置。`;
     }
   },
   4: {
     title: "擇日學",
     academic: "董公擇日正五行、72穿山七十二龍分金",
     ring: "穿山72龍＋分金",
-    plain: "白話來說，就是選「什麼日子做事比較合適」。動土、開工、開門、搬家等，都希望選到不犯空亡、不沖太歲、龍氣較佳的日子。完整做法會用72穿山龍來判斷這一天對這個坐向是吉龍還是凶龍。",
-    how: "結合用事性質、宅主年命、住宅坐向，以及當日干支、神煞、空亡。72穿山龍可進一步細分龍的吉凶。",
-    example: "若要動土，先排除與太歲沖刑、空亡、三煞等日期，再從剩餘日子中選擇與坐向龍氣相合的日子。",
-    points: ["正五行：日干支與用事的生剋", "空亡：避免落空", "72穿山龍：細分龍的吉凶", "分金：坐向精確度參考"],
-    dynamic: function(sit, face) {
-      return `目前坐向鎖定為【${sit}山】向【${face}】。\n白話：之後擇日時，請以此坐向為基準，選擇與${sit}龍氣相合、不犯空亡、不沖太歲的日子。吉龍日動土或開門，較利於後續穩定。`;
-    }
+    plain: "白話就是選「什麼日子做事合適」。動土、開門、搬家都希望不犯空亡、不沖太歲、龍氣較佳。",
+    how: "結合用事、年命、坐向、當日干支與神煞。72穿山可進一步看吉龍凶龍。",
+    example: "動土先排除沖太歲、空亡、三煞，再選與坐向龍氣相合的日子。",
+    points: ["正五行生剋", "空亡", "72穿山龍", "分金"],
+    dynamic: (sit, face) => `目前坐【${sit}山】向【${face}】。\n白話：之後擇日請以此坐向為基準，選與${sit}龍氣相合、不犯空亡、不沖太歲的日子。吉龍日動土或開門較利後續穩定。`
   },
   5: {
     title: "奇門陽宅學",
-    academic: "奇門遁甲陽宅＋60透地六十龍＋後天派",
+    academic: "奇門遁甲陽宅＋60透地＋後天派",
     ring: "天盤縫針／60透地＋奇門八門",
-    plain: "白話來說，就是看「家裡怎麼擺」以及「地氣夠不夠深」。奇門把空間分成八個門，每個門有不同的氣場特質。財位適合放在較吉的門；容易吵架或生病的位置，可能落在較凶的門。",
-    how: "先定坐向，排出奇門盤或用後天八卦對應，再看八門落在哪些方位。結合60透地看該坐向的地氣情況。",
-    example: "若財位落在開門或休門，且地氣較厚，適合放置金庫、辦公桌；若床位落在死門或傷門，長期使用可能較易有健康或人際問題。",
-    points: ["八門：休生傷杜景死驚開", "吉門：休、生、開較宜用", "凶門：死、驚、傷需注意", "60透地：觀察地氣深淺"],
-    dynamic: function(sit, face) {
-      return `目前坐【${sit}】向【${face}】。\n白話：以此坐向排出奇門八門後，可判斷財位、病位、吵架位分別落在哪個門。建議財位取吉門，病位與易起衝突的位置避免長期使用，或進行化解。`;
+    plain: "白話就是看家怎麼擺、地氣夠不夠。奇門八門各有特質：休生開較吉，死驚傷較需注意。",
+    how: "定坐向後，用後天八卦對應八門位置，再結合60透地看地氣。",
+    example: "財位取開門或休門且地氣厚者；床位避開死門、傷門。",
+    points: ["八門：休生傷杜景死驚開", "吉門：休生開", "凶門：死驚傷", "60透地：地氣深淺"],
+    dynamic: (sit, face) => {
+      const bagua = sitToBagua(sit);
+      return `目前坐【${sit}】向【${face}】（坐山屬後天【${bagua}】卦，方位${BAGUA_DIR[bagua]||""}）。\n\n八門白話直接說明：\n• 休門：${MEN_MEANING["休"]}\n• 生門：${MEN_MEANING["生"]}\n• 傷門：${MEN_MEANING["傷"]}\n• 杜門：${MEN_MEANING["杜"]}\n• 景門：${MEN_MEANING["景"]}\n• 死門：${MEN_MEANING["死"]}\n• 驚門：${MEN_MEANING["驚"]}\n• 開門：${MEN_MEANING["開"]}\n\n說明：完整奇門盤需依局數與時辰排八門落宮。本原型以坐山後天卦為基準，提供八門含義直解，方便先理解吉凶特質。實際落宮請再依完整奇門排盤或專業軟體確認。財位優先考慮休、生、開門特質的方位；床位與久坐處避開死、驚、傷門特質。`;
     }
   },
   6: {
     title: "易占星宿學",
     academic: "周易梅花易數＋28星宿宿曜",
     ring: "28星宿＋易占",
-    plain: "白話來說，就是看「心裡卡住的地方」以及「今天星宿照到哪、什麼事比較容易應驗」。28星宿每天輪值，不同宿有不同特質。梅花易數則依當下時間、方位或所問之事起卦。",
-    how: "可先查當日28宿，了解其大致吉凶與適宜事項。若有具體問題，可用梅花易數依時間或觸機起卦，結合當前方位與星宿。",
-    example: "若今日值某吉宿，且所問之事與該宿特質相符，可較積極行動；若值凶宿或卦象顯示阻滯，則宜放緩或調整心態。",
-    points: ["28星宿：每日輪值，各有特質", "梅花易數：依時空或觸機起卦", "重點：心卡處與應事方向", "應用：決策參考與心境調整"],
-    dynamic: function(sit, face) {
-      return `目前方位指向【${sit}山】（向【${face}】）。\n白話：可結合今日28宿與當前方位起卦。若心中有卡住的問題，可依此方位與時間起梅花易數，看卦象與應事方向。重點在心態調整與決策參考，而非絕對預測。`;
-    }
+    plain: "白話就是看心卡在哪、今天星宿照哪、什麼事較易應驗。28宿每日輪值，梅花易數依時空起卦看心態與應事。",
+    how: "查當日28宿，或依時間／觸機起梅花卦，結合當前方位。",
+    example: "吉宿且事與特質相符可積極；凶宿或卦象阻滯則放緩、調心態。",
+    points: ["28宿每日輪值", "梅花易數起卦", "重點：心卡與應事", "應用：決策與心境"],
+    dynamic: (sit, face) => `正針指向【${face}山】（向），坐【${sit}山】。\n白話：可結合今日28宿與當前方位起卦。心中有卡住的問題，可依此方位與時間起梅花易數，看卦象與應事方向。重點在心態調整與決策參考，而非絕對預測。`
   }
 };
 
-/* ===================== 狀態 ===================== */
-let isActive = false;
-let isLocked = false;
-let currentHeading = 0;
-let currentSit = "子";
-let currentFace = "午";
-let trueOffset = -4.2;
-let activeGate = 1;
-
+let isActive = false, isLocked = false, currentHeading = 0, currentSit = "子", currentFace = "午", trueOffset = -4.2, activeGate = 1;
 const canvas = document.getElementById("luopan");
 const ctx = canvas.getContext("2d");
 const statusBar = document.getElementById("statusBar");
@@ -369,124 +264,58 @@ const offsetInput = document.getElementById("offsetInput");
 const lockBadge = document.getElementById("lockBadge");
 const liveText = document.getElementById("liveText");
 
-/* ===================== 繪製羅盤 ===================== */
 function drawLuopan(heading) {
-  const w = canvas.width, h = canvas.height;
-  const cx = w / 2, cy = h / 2;
-  const r = Math.min(w, h) / 2 - 8;
-
-  ctx.clearRect(0, 0, w, h);
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.fillStyle = "#0a0a0c";
-  ctx.fill();
-
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.rotate((-heading * Math.PI) / 180);
-
-  const radii = [0.98, 0.82, 0.68, 0.54, 0.40, 0.26];
-  radii.forEach((ratio, i) => {
-    ctx.beginPath();
-    ctx.arc(0, 0, r * ratio, 0, Math.PI * 2);
-    ctx.strokeStyle = i === 0 ? "#555" : "#333";
-    ctx.lineWidth = i === 0 ? 3 : 1.5;
-    ctx.stroke();
+  const w = canvas.width, h = canvas.height, cx = w/2, cy = h/2, r = Math.min(w,h)/2 - 8;
+  ctx.clearRect(0,0,w,h);
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fillStyle="#0a0a0c"; ctx.fill();
+  ctx.save(); ctx.translate(cx,cy); ctx.rotate((-heading*Math.PI)/180);
+  [0.98,0.82,0.68,0.54,0.40,0.26].forEach((ratio,i)=>{
+    ctx.beginPath(); ctx.arc(0,0,r*ratio,0,Math.PI*2);
+    ctx.strokeStyle = i===0?"#555":"#333"; ctx.lineWidth = i===0?3:1.5; ctx.stroke();
   });
-
-  ctx.font = "bold 22px sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  for (let i = 0; i < 24; i++) {
-    const angle = (i * 15 - 90) * Math.PI / 180;
-    const rad = r * 0.90;
-    const x = Math.cos(angle) * rad;
-    const y = Math.sin(angle) * rad;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(angle + Math.PI / 2);
-    const isCurrent = getMountain(heading) === M24[i];
-    ctx.fillStyle = isCurrent ? "#d4a017" : "#c8c8d0";
-    ctx.fillText(M24[i], 0, 0);
-    ctx.restore();
+  ctx.font="bold 22px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
+  for(let i=0;i<24;i++){
+    const angle=(i*15-90)*Math.PI/180, rad=r*0.90;
+    ctx.save(); ctx.translate(Math.cos(angle)*rad, Math.sin(angle)*rad); ctx.rotate(angle+Math.PI/2);
+    ctx.fillStyle = getMountain(heading)===M24[i] ? "#d4a017" : "#c8c8d0";
+    ctx.fillText(M24[i],0,0); ctx.restore();
   }
-
-  for (let i = 0; i < 24; i++) {
-    const angle = (i * 15 - 90) * Math.PI / 180;
-    ctx.beginPath();
-    ctx.moveTo(Math.cos(angle) * r * 0.78, Math.sin(angle) * r * 0.78);
-    ctx.lineTo(Math.cos(angle) * r * 0.86, Math.sin(angle) * r * 0.86);
-    ctx.strokeStyle = "#666";
-    ctx.lineWidth = 2;
-    ctx.stroke();
+  for(let i=0;i<24;i++){
+    const angle=(i*15-90)*Math.PI/180;
+    ctx.beginPath(); ctx.moveTo(Math.cos(angle)*r*0.78,Math.sin(angle)*r*0.78);
+    ctx.lineTo(Math.cos(angle)*r*0.86,Math.sin(angle)*r*0.86); ctx.strokeStyle="#666"; ctx.lineWidth=2; ctx.stroke();
   }
-
-  for (let i = 0; i < 72; i++) {
-    if (i % 3 === 0) continue;
-    const angle = (i * 5 - 90) * Math.PI / 180;
-    ctx.beginPath();
-    ctx.moveTo(Math.cos(angle) * r * 0.70, Math.sin(angle) * r * 0.70);
-    ctx.lineTo(Math.cos(angle) * r * 0.76, Math.sin(angle) * r * 0.76);
-    ctx.strokeStyle = "#444";
-    ctx.lineWidth = 1;
-    ctx.stroke();
+  for(let i=0;i<72;i++){
+    if(i%3===0) continue;
+    const angle=(i*5-90)*Math.PI/180;
+    ctx.beginPath(); ctx.moveTo(Math.cos(angle)*r*0.70,Math.sin(angle)*r*0.70);
+    ctx.lineTo(Math.cos(angle)*r*0.76,Math.sin(angle)*r*0.76); ctx.strokeStyle="#444"; ctx.lineWidth=1; ctx.stroke();
   }
-
-  const cardinals = [{ name: "北", angle: 0 }, { name: "東", angle: 90 }, { name: "南", angle: 180 }, { name: "西", angle: 270 }];
-  ctx.font = "bold 18px sans-serif";
-  cardinals.forEach(c => {
-    const angle = (c.angle - 90) * Math.PI / 180;
-    ctx.fillStyle = "#3b82f6";
-    ctx.fillText(c.name, Math.cos(angle) * r * 0.58, Math.sin(angle) * r * 0.58);
+  [{name:"北",angle:0},{name:"東",angle:90},{name:"南",angle:180},{name:"西",angle:270}].forEach(c=>{
+    const angle=(c.angle-90)*Math.PI/180;
+    ctx.fillStyle="#3b82f6"; ctx.fillText(c.name, Math.cos(angle)*r*0.58, Math.sin(angle)*r*0.58);
   });
-
-  ctx.beginPath();
-  ctx.arc(0, 0, r * 0.22, 0, Math.PI * 2);
-  ctx.fillStyle = "#0d0d0f";
-  ctx.fill();
-  ctx.strokeStyle = "#d4a017";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.font = "14px sans-serif";
-  ctx.fillStyle = "#9a9aa3";
-  ctx.fillText("六門", 0, -8);
-  ctx.fillText("同參", 0, 10);
-
+  ctx.beginPath(); ctx.arc(0,0,r*0.22,0,Math.PI*2); ctx.fillStyle="#0d0d0f"; ctx.fill();
+  ctx.strokeStyle="#d4a017"; ctx.lineWidth=2; ctx.stroke();
+  ctx.font="14px sans-serif"; ctx.fillStyle="#9a9aa3"; ctx.fillText("六門",0,-8); ctx.fillText("同參",0,10);
   ctx.restore();
-
-  ctx.beginPath();
-  ctx.moveTo(cx, 18);
-  ctx.lineTo(cx - 10, 36);
-  ctx.lineTo(cx + 10, 36);
-  ctx.closePath();
-  ctx.fillStyle = "#ef4444";
-  ctx.fill();
+  ctx.beginPath(); ctx.moveTo(cx,18); ctx.lineTo(cx-10,36); ctx.lineTo(cx+10,36); ctx.closePath(); ctx.fillStyle="#ef4444"; ctx.fill();
 }
 
-/* ===================== 更新 UI 與動態解說 ===================== */
 function updateUI(heading) {
-  const sit = getMountain(heading);
-  const face = OPPOSITE[sit] || "—";
-  currentSit = sit;
-  currentFace = face;
-
+  const face = getMountain(heading);
+  const sit = OPPOSITE[face] || "—";
+  currentSit = sit; currentFace = face;
   headingText.textContent = heading.toFixed(1) + "°";
-  mountainText.textContent = `正針 · ${sit}山 ｜ 坐${sit}向${face}`;
-
-  // 即時總覽白話
-  liveText.textContent = `目前指向【${sit}山】，若以此為坐，則向為【${face}】。\n${MOUNTAIN_TRAIT[sit] || ""}\n（下方各門分頁的「即時動態解說」也會同步更新）`;
-
-  // 若當前分頁有動態函式，刷新該分頁內容
+  mountainText.textContent = `正針 · ${face}山 ｜ 坐${sit}向${face}`;
+  liveText.textContent = `正針指向【${face}山】＝向（前方），對宮【${sit}山】＝坐（後方）。\n坐${sit}向${face}。${MOUNTAIN_TRAIT[sit]||""}\n（下方各門「即時動態解說」已盡量直接標示對應與白話）`;
   refreshGateDynamic();
 }
 
 function refreshGateDynamic() {
   const g = GATES[activeGate];
-  if (!g) return;
   const dynEl = document.getElementById("dynamicBlock");
-  if (dynEl && g.dynamic) {
-    dynEl.textContent = g.dynamic(currentSit, currentFace);
-  }
+  if (dynEl && g && g.dynamic) dynEl.textContent = g.dynamic(currentSit, currentFace);
 }
 
 function handleOrientation(e) {
@@ -494,42 +323,30 @@ function handleOrientation(e) {
   let alpha = e.alpha;
   if (e.webkitCompassHeading != null) alpha = e.webkitCompassHeading;
   if (alpha == null) return;
-
   trueOffset = parseFloat(offsetInput.value) || 0;
-  let heading = (alpha + trueOffset + 360) % 360;
-  currentHeading = heading;
-  updateUI(heading);
-  drawLuopan(heading);
+  currentHeading = (alpha + trueOffset + 360) % 360;
+  updateUI(currentHeading);
+  drawLuopan(currentHeading);
 }
 
-function setStatus(msg, type = "") {
+function setStatus(msg, type="") {
   statusBar.textContent = msg;
   statusBar.className = "status-bar" + (type ? " " + type : "");
 }
 
 async function startGyro() {
-  if (isActive) {
-    stopGyro();
-    return;
-  }
-  if (typeof DeviceOrientationEvent !== "undefined" &&
-      typeof DeviceOrientationEvent.requestPermission === "function") {
+  if (isActive) { stopGyro(); return; }
+  if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
     try {
       const state = await DeviceOrientationEvent.requestPermission();
-      if (state !== "granted") {
-        setStatus("使用者拒絕陀螺儀權限", "error");
-        return;
-      }
-    } catch (err) {
-      setStatus("無法請求權限：" + err.message, "error");
-      return;
-    }
+      if (state !== "granted") { setStatus("使用者拒絕陀螺儀權限", "error"); return; }
+    } catch (err) { setStatus("無法請求權限：" + err.message, "error"); return; }
   }
   window.addEventListener("deviceorientation", handleOrientation, true);
   isActive = true;
   btnStart.textContent = "停止陀螺儀";
   btnStart.classList.add("btn-success");
-  setStatus("陀螺儀運行中 · 轉動手機即可看到白話更新", "active");
+  setStatus("陀螺儀運行中 · 轉動手機即可看到對應白話更新", "active");
 }
 
 function stopGyro() {
@@ -547,7 +364,7 @@ document.getElementById("btnLock").addEventListener("click", () => {
     setStatus("方位已鎖定 · " + currentHeading.toFixed(1) + "°", "active");
   } else {
     lockBadge.classList.add("hidden");
-    setStatus(isActive ? "陀螺儀運行中 · 轉動手機即可看到白話更新" : "尚未啟動感測器", isActive ? "active" : "");
+    setStatus(isActive ? "陀螺儀運行中 · 轉動手機即可看到對應白話更新" : "尚未啟動感測器", isActive ? "active" : "");
   }
 });
 
@@ -556,54 +373,31 @@ function showGate(id) {
   const g = GATES[id];
   document.getElementById("gateContent").innerHTML = `
     <h3>${g.title}</h3>
-    <div class="section">
-      <span class="tag">學術來源</span>${g.academic}
-    </div>
-    <div class="section">
-      <span class="tag">對應盤環</span>${g.ring}
-    </div>
-    <div class="section">
-      <div class="section-title">白話完整解說</div>
-      <div class="plain">${g.plain}</div>
-    </div>
-    <div class="section">
-      <div class="section-title">如何使用本盤</div>
-      <div class="plain">${g.how}</div>
-    </div>
-    <div class="section">
-      <div class="section-title">實際例子</div>
-      <div class="example">${g.example}</div>
-    </div>
-    <div class="section">
-      <div class="section-title">即時動態解說（隨方位更新）</div>
-      <div class="dynamic-box" id="dynamicBlock">${g.dynamic(currentSit, currentFace)}</div>
-    </div>
-    <div class="section">
-      <div class="section-title">觀察重點</div>
-      <ul>${g.points.map(p => `<li>${p}</li>`).join("")}</ul>
-    </div>
-  `;
-  document.querySelectorAll(".gate-tab").forEach(t => {
-    t.classList.toggle("active", t.dataset.gate === String(id));
-  });
+    <div class="section"><span class="tag">學術來源</span>${g.academic}</div>
+    <div class="section"><span class="tag">對應盤環</span>${g.ring}</div>
+    <div class="section"><div class="section-title">白話完整解說</div><div class="plain">${g.plain}</div></div>
+    <div class="section"><div class="section-title">如何使用本盤</div><div class="plain">${g.how}</div></div>
+    <div class="section"><div class="section-title">實際例子</div><div class="example">${g.example}</div></div>
+    <div class="section"><div class="section-title">即時動態解說（隨方位更新，已盡量直接標示）</div>
+      <div class="dynamic-box" id="dynamicBlock">${g.dynamic(currentSit, currentFace)}</div></div>
+    <div class="section"><div class="section-title">觀察重點</div><ul>${g.points.map(p=>`<li>${p}</li>`).join("")}</ul></div>`;
+  document.querySelectorAll(".gate-tab").forEach(t => t.classList.toggle("active", t.dataset.gate === String(id)));
 }
 
-document.getElementById("gatesTabs").addEventListener("click", (e) => {
+document.getElementById("gatesTabs").addEventListener("click", e => {
   if (e.target.classList.contains("gate-tab")) showGate(e.target.dataset.gate);
 });
-
 btnStart.addEventListener("click", startGyro);
 document.getElementById("btnCalibrate").addEventListener("click", () => {
-  alert("進階校正：請將手機指向已知真北方向後，調整上方「真北偏移」數值。\n台灣地區常見參考值為 −4.2°。");
+  alert("請將手機指向已知真北後，調整「真北偏移」數值。台灣常見參考 −4.2°。");
 });
 document.getElementById("btnInfo").addEventListener("click", () => {
-  alert("使用說明：\n1. 必須以 HTTPS 開啟。\n2. 點擊「一鍵啟動陀螺儀」並允許權限。\n3. 水平持機並轉動，上方「即時方位白話」與下方各門「即時動態解說」會隨24山同步更新。\n4. 可鎖定方位觀察。\n5. 六門分頁提供完整靜態解說＋動態區塊。");
+  alert("1. 必須 HTTPS 開啟\n2. 一鍵啟動陀螺儀並允許權限\n3. 轉動手機，即時白話與各門動態區塊會更新\n4. 八宅已直接解釋五鬼絕命等含義\n5. 奇門已直接解釋八門吉凶特質\n6. 飛星說明：可鎖定坐向，但流年仍需另算才能得當年具體宮位");
 });
 
 showGate(1);
 drawLuopan(0);
 updateUI(0);
-
 if (!window.DeviceOrientationEvent) {
   setStatus("此瀏覽器不支援 DeviceOrientation", "error");
   btnStart.disabled = true;
